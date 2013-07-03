@@ -87,6 +87,7 @@ namespace WorldSim.Interface
 
                 } while (!bPlaced);
             }
+            Debug.Assert(inhabitants.Count > 0);
             Debug.WriteLine(String.Format("Picking random cell was {0}% efficient ({1}/{2}) with Sigma={3}.", 
                 ((int)(100.0d - 100.0d * nRepeats / inhabitants.Count)).ToString(), nRepeats, inhabitants.Count, Sigma));
         }

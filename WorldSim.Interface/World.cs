@@ -313,7 +313,7 @@ namespace WorldSim.Interface
         }
         public void Draw(Graphics bitmapGraphics, Rectangle rectViewport, float fScale)
         {
-            if (Monitor.TryEnter(this, 5000))
+            //if (Monitor.TryEnter(this, 5000))
             {
                 try
                 {
@@ -351,17 +351,27 @@ namespace WorldSim.Interface
                     //foreach (SelectableObject dr in agents)
                     //    dr.Draw(bitmapGraphics, rectViewport, fScale);
                 }
+                catch (InvalidOperationException ex)
+                {
+                    // just swallow it and paint them next time
+                    Debug.WriteLine("InvalidOperationException while painting.");
+                }
+                catch (Exception ex)
+                {
+                    // just swallow it and paint them next time
+                    Debug.WriteLine(ex.Message);
+                }
                 finally
                 {
-                    Monitor.Exit(this);
+                    //Monitor.Exit(this);
                 }
             }
-            else
-            {
+            //else
+            //{
                 // Code to execute if the attempt times out.
                 // (just wait and try drawing again next time)
-                System.Diagnostics.Debug.WriteLine("Drawing timed out.");
-            }
+                //System.Diagnostics.Debug.WriteLine("Drawing timed out.");
+            //}
         }
 
         private ECRandom m_random;

@@ -122,10 +122,6 @@ namespace WorldSim
             m_world.CollisionDetectedEvent += OnCollisionDetected;
             m_world.ObjectSelectedEvent += OnObjectSelected;
 
-            // re-add all the little guys
-
-
-
             Invalidate();
         }
 

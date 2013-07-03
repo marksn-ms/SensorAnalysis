@@ -148,6 +148,9 @@ namespace WorldSim
                 //}
             }
 
+            m_testSettings.Tiles = dlg.Tiles;
+            m_testSettings.TileSize = dlg.TileSize;
+            m_testSettings.TileShape = dlg.TileShape;
             DoLogEvent(this, "Created world with " + m_world.TilesWidth + "x" 
                 + m_world.TilesHeight + " " + dlg.TileShape + " tiles, sized " + m_world.TileWidth + "x" 
                 + m_world.TileHeight + ".");
@@ -533,6 +536,8 @@ namespace WorldSim
                         PropertyInfo pi = o.GetType().GetProperty(ttps);
                         pi.SetValue(o, Convert.ChangeType(props[ttps], pi.PropertyType), null);
                     }
+                    (o as Deployer).Deploy();
+
                     DoLogEvent(this, "Deployed using " + type + " deployer.");
                 }
 
@@ -581,6 +586,10 @@ namespace WorldSim
             mnuEditStop.Enabled = false;
             progressBar1.Visible = false;
             m_world.LogEvent += new WorldControl.LogDelegate(OnLogEvent);
+
+            DoLogEvent(this, "Created world with " + m_world.TilesWidth + "x"
+                + m_world.TilesHeight + " Rectangle tiles, sized " + m_world.TileWidth + "x"
+                + m_world.TileHeight + ".");
 
             // add watcher list to menu
             foreach (string strWatcherName in m_watcherTypes.Keys)
@@ -658,6 +667,9 @@ namespace WorldSim
                     DoLogEvent(this, "Resetting world.");
 
                     this.m_world.Reset(m_testSettings.Tiles, m_testSettings.TileSize, m_testSettings.TileShape);
+                    DoLogEvent(this, "Created world with " + m_world.TilesWidth + "x"
+                        + m_world.TilesHeight + " " + m_testSettings.TileShape + " tiles, sized " + m_world.TileWidth + "x"
+                        + m_world.TileHeight + ".");
 
                     // re-setup the environment the same as m_testSettings indicates 
                     // -- any custom settings from initial setup will be lost 

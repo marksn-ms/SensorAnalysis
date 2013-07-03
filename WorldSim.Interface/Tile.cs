@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
+using System.Threading;
 
 namespace WorldSim.Interface
 {
@@ -105,7 +106,6 @@ namespace WorldSim.Interface
         }
         
         public abstract int Sides { get; }
-
         private List<SelectableObject> m_objects;
         public Boolean HasObjects(Type T)
         {

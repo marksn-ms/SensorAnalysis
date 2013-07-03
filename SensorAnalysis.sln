@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sensors", "Sensors\Sensors.csproj", "{675AB8B9-3B9B-4DA7-AB1E-9F3C45FF2DA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldSim", "WorldSim\WorldSim.csproj", "{B8CCB9AD-0488-4062-9359-DCD85BAC4D05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldSim.Interface", "WorldSim.Interface\WorldSim.Interface.csproj", "{41D19A75-C9F3-4F82-BC30-81B0F0404F3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourAgent", "TourAgent\TourAgent.csproj", "{2D2C0A7D-EA68-4ADB-B381-27A21239A250}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileSensorAgents", "MobileSensorAgents\MobileSensorAgents.csproj", "{1DC6D7BD-9B30-46CA-B9EB-C5D53E349D0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenRing", "TokenRing\TokenRing.csproj", "{BB5F127D-1E7D-4246-B15C-5C1B31B44154}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisabledMobility", "DisabledMobility\DisabledMobility.csproj", "{E42D835E-1D13-4E6E-A908-727A0C5E9558}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{675AB8B9-3B9B-4DA7-AB1E-9F3C45FF2DA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675AB8B9-3B9B-4DA7-AB1E-9F3C45FF2DA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675AB8B9-3B9B-4DA7-AB1E-9F3C45FF2DA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675AB8B9-3B9B-4DA7-AB1E-9F3C45FF2DA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8CCB9AD-0488-4062-9359-DCD85BAC4D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8CCB9AD-0488-4062-9359-DCD85BAC4D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8CCB9AD-0488-4062-9359-DCD85BAC4D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8CCB9AD-0488-4062-9359-DCD85BAC4D05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41D19A75-C9F3-4F82-BC30-81B0F0404F3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41D19A75-C9F3-4F82-BC30-81B0F0404F3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41D19A75-C9F3-4F82-BC30-81B0F0404F3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41D19A75-C9F3-4F82-BC30-81B0F0404F3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D2C0A7D-EA68-4ADB-B381-27A21239A250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D2C0A7D-EA68-4ADB-B381-27A21239A250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D2C0A7D-EA68-4ADB-B381-27A21239A250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D2C0A7D-EA68-4ADB-B381-27A21239A250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DC6D7BD-9B30-46CA-B9EB-C5D53E349D0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DC6D7BD-9B30-46CA-B9EB-C5D53E349D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DC6D7BD-9B30-46CA-B9EB-C5D53E349D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DC6D7BD-9B30-46CA-B9EB-C5D53E349D0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB5F127D-1E7D-4246-B15C-5C1B31B44154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB5F127D-1E7D-4246-B15C-5C1B31B44154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB5F127D-1E7D-4246-B15C-5C1B31B44154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB5F127D-1E7D-4246-B15C-5C1B31B44154}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E42D835E-1D13-4E6E-A908-727A0C5E9558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E42D835E-1D13-4E6E-A908-727A0C5E9558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E42D835E-1D13-4E6E-A908-727A0C5E9558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E42D835E-1D13-4E6E-A908-727A0C5E9558}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+EndGlobal

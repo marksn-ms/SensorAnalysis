@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="DisabledMobilityDeployer.cs" />
     <Compile Include="DisabledMobilitySensor.cs" />
+    <Compile Include="DisabledMobilityWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

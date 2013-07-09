@@ -117,16 +117,22 @@ namespace WorldSim.Interface
         [CategoryAttribute("Behavior")]
         public IEnumerable<SelectableObject> Objects(Type T)
         {
+            List<SelectableObject> list = new List<SelectableObject>();
             foreach (SelectableObject s in m_objects)
                 if (T.IsAssignableFrom(s.GetType()))
-                    yield return s;
+                    list.Add(s);
+            foreach (SelectableObject s in list)
+                yield return s;
         }
         public IEnumerable<SelectableObject> NearbyObjects(Type T)
         {
+            List<SelectableObject> list = new List<SelectableObject>();
             foreach (Tile t in Neighbors)
                 foreach (SelectableObject m in t.Objects(T))
-                    yield return m;
+                    list.Add(m);
             foreach (SelectableObject m in this.Objects(T))
+                list.Add(m);
+            foreach (SelectableObject m in list)
                 yield return m;
         }
         public void RemoveObject(SelectableObject o)

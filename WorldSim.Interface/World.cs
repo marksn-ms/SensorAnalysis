@@ -351,7 +351,7 @@ namespace WorldSim.Interface
                     //foreach (SelectableObject dr in agents)
                     //    dr.Draw(bitmapGraphics, rectViewport, fScale);
                 }
-                catch (InvalidOperationException ex)
+                catch (InvalidOperationException)
                 {
                     // just swallow it and paint them next time
                     Debug.WriteLine("InvalidOperationException while painting.");
@@ -540,9 +540,12 @@ namespace WorldSim.Interface
         {
             get
             {
+                List<Incident> list = new List<Incident>();
                 foreach (Tile tEnv in Tiles.AllTiles)
                     foreach (Incident i in tEnv.Objects(typeof(Incident)))
-                        yield return i;
+                        list.Add(i);
+                foreach (Incident i in list)
+                    yield return i;
             }
         }
 
@@ -550,9 +553,12 @@ namespace WorldSim.Interface
         {
             get
             {
+                List<Inhabitant> list = new List<Inhabitant>();
                 foreach (Tile tEnv in Tiles.AllTiles)
                     foreach (Inhabitant i in tEnv.Objects(typeof(Inhabitant)))
-                        yield return i;
+                        list.Add(i);
+                foreach (Inhabitant i in list)
+                    yield return i;
             }
         }
 
@@ -560,9 +566,12 @@ namespace WorldSim.Interface
         {
             get
             {
+                List<Marker> list = new List<Marker>();
                 foreach (Tile tEnv in Tiles.AllTiles)
                     foreach (Marker m in tEnv.Objects(typeof(Marker)))
-                        yield return m;
+                        list.Add(m);
+                foreach(Marker m in list)
+                    yield return m;
             }
         }
 
@@ -570,10 +579,23 @@ namespace WorldSim.Interface
         {
             get
             {
+                List<SelectableObject> list = new List<SelectableObject>();
                 foreach (Tile t in Tiles.AllTiles)
                     foreach (SelectableObject o in t.Objects(typeof(SelectableObject)))
-                        yield return o;
+                        list.Add(o);
+                foreach(SelectableObject o in list)
+                    yield return o;
             }
+        }
+
+        public IEnumerable<SelectableObject> Objects(Type T)
+        {
+            List<SelectableObject> list = new List<SelectableObject>();
+            foreach (Tile t in Tiles.AllTiles)
+                foreach (SelectableObject o in t.Objects(T))
+                    list.Add(o);
+            foreach (SelectableObject o in list)
+                yield return o;
         }
 
         /// <summary>

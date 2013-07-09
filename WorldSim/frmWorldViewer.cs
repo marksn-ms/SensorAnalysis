@@ -667,6 +667,9 @@ namespace WorldSim
                     DoLogEvent(this, "Resetting world.");
 
                     this.m_world.Reset(m_testSettings.Tiles, m_testSettings.TileSize, m_testSettings.TileShape);
+                    foreach (Watcher w in m_watcherActive)
+                        w.Dispose();
+                    m_watcherActive.Clear();
                     DoLogEvent(this, "Created world with " + m_world.TilesWidth + "x"
                         + m_world.TilesHeight + " " + m_testSettings.TileShape + " tiles, sized " + m_world.TileWidth + "x"
                         + m_world.TileHeight + ".");

@@ -1014,19 +1014,20 @@ namespace WorldSim.Interface
         /// <param name="ind">The ind.</param>
         private void SetParent(SelectableObject o)
         {
-            if (o.Parent != null)
+            Tile parent = o.Parent;
+            if (parent != null)
             {
                 // if I'm in my parent's region, no need to search at all
-                if (o.Parent.PointInRegion(o.Position))
+                if (parent.PointInRegion(o.Position))
                     return;
 
                 // remove it from its current parent's list
-                o.Parent.RemoveObject(o);
+                parent.RemoveObject(o);
+                o.Parent = null;
 
                 // Then search my current parent's neighbors and see if I 
                 // moved into one of them.
-                IEnumerable<Tile> neighbors = o.Parent.Neighbors;
-                //ind.Parent = null;
+                IEnumerable<Tile> neighbors = parent.Neighbors;
                 foreach (Tile t in neighbors)
                 {
                     if (t.PointInRegion(o.Position))
@@ -1039,6 +1040,7 @@ namespace WorldSim.Interface
             }
 
             // if we still haven't found it, search every tile
+            Debug.WriteLine("World.SetParent: object not in parent nor parent's neighbors.");
             double dShortestDistance = double.PositiveInfinity;
             Tile tShortestDistance = null;
             foreach (Tile t in Tiles.AllTiles)
@@ -1049,21 +1051,21 @@ namespace WorldSim.Interface
                     o.Parent = t;
                     return;
                 }
-                double dDistance = Distance(t.Center, o.Center);
+                double dDistance = Distance(t.Center, o.Position);
                 if (dDistance < dShortestDistance)
                 {
                     dShortestDistance = dDistance;
                     tShortestDistance = t;
                 }
             }
-
             // if we made it here, then just put it in the closest tile
+            Debug.WriteLine("World.SetParent: parent found for lost object.");
             tShortestDistance.AddObject(o);
             o.Parent = tShortestDistance;
 
             // just a double-check
             if (o.Parent == null)
-                throw new ApplicationException("No suitable tile found for inhabitant.");
+                throw new ApplicationException("World.SetParent: no suitable tile found for lost object.");
         }
 
         /// <summary>

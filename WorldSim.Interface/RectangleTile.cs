@@ -48,19 +48,19 @@ namespace WorldSim.Interface
                 m_bRegionDirty = true;
             }
         }
-        /// <summary>Returns true if the specified point lies within the bounding rectangle of this object.</summary>
-        /// <param name="pt">The point to test (in world coordinates)</param>
-        /// <returns>True = the point lies within the bounding rectangle.</returns>
-        public override bool PointInRegion(PointF pt)
-        {
-            if (m_bRegionDirty)
-            {
-                m_outline = GetGraphicsPath();
-                m_region = new Region(m_outline);
-                m_bRegionDirty = false;
-            }
-            return m_region.IsVisible(pt);
-        }
+        ///// <summary>Returns true if the specified point lies within the bounding rectangle of this object.</summary>
+        ///// <param name="pt">The point to test (in world coordinates)</param>
+        ///// <returns>True = the point lies within the bounding rectangle.</returns>
+        //public override bool PointInRegion(PointF pt)
+        //{
+        //    if (m_bRegionDirty)
+        //    {
+        //        m_outline = GetGraphicsPath();
+        //        m_region = new Region(m_outline);
+        //        m_bRegionDirty = false;
+        //    }
+        //    return m_region.IsVisible(pt);
+        //}
         [NonSerialized]
         private Region m_region;
         [NonSerialized]

@@ -234,9 +234,9 @@ namespace WorldSim
         private void Tick()
         {
             // just call tick once
-            m_world.World.DoPreTickEvent(m_nTicks);
+            m_world.World.DoPreTickEvent(m_nTicks, m_nRepeat);
             m_world.Tick();
-            m_world.World.DoPostTickEvent(m_nTicks);
+            m_world.World.DoPostTickEvent(m_nTicks, m_nRepeat);
 
             RefreshProperties();
         }

@@ -1449,9 +1449,11 @@ namespace WorldSim.Interface
         /// </summary>
         public class PreTickEventArgs : EventArgs
         {
+            private int m_repeat;
+            public int Repeat { get { return m_repeat; } }
             private int m_tick;
             public int Tick { get {return m_tick;} }
-            public PreTickEventArgs(int tick) { m_tick = tick; }
+            public PreTickEventArgs(int tick, int repeat) { m_tick = tick; m_repeat = repeat; }
         }
         /// <summary>
         /// Delegate for the PreTickEvent.
@@ -1469,9 +1471,11 @@ namespace WorldSim.Interface
         /// </summary>
         public class PostTickEventArgs
         {
+            private int m_repeat;
+            public int Repeat { get { return m_repeat; } }
             private int m_tick;
             public int Tick { get { return m_tick; } }
-            public PostTickEventArgs(int tick) { m_tick = tick; }
+            public PostTickEventArgs(int tick, int repeat) { m_tick = tick; m_repeat = repeat; }
         }
         /// <summary>
         /// Delegate for the PostTickEvent.
@@ -1507,16 +1511,17 @@ namespace WorldSim.Interface
                 PostTestRunEvent(this, new World.PostTestRunEventArgs());
         }
 
-        public void DoPreTickEvent(int tick)
+        public void DoPreTickEvent(int tick, int repeat)
         {
             if (PreTickEvent != null)
-                PreTickEvent(this, new PreTickEventArgs(tick));
+                PreTickEvent(this, new PreTickEventArgs(tick, repeat));
         }
 
-        public void DoPostTickEvent(int tick)
+        public void DoPostTickEvent(int tick, int repeat)
         {
+            
             if (PostTickEvent != null)
-                PostTickEvent(this, new PostTickEventArgs(tick));
+                PostTickEvent(this, new PostTickEventArgs(tick, repeat));
         }
     }
 }

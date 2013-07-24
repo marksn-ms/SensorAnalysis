@@ -72,6 +72,11 @@ namespace WorldSim.Interface
                 m_bRegionDirty = false;
             }
             return m_region.IsVisible(pt);
+            //PointF q2 = new PointF(Math.Abs(pt.X - Center.X), Math.Abs(pt.Y - Center.Y));
+            //if (q2.X >= Size.Width || q2.Y > Size.Width) 
+            //    return false;
+            //float dot = 2 * Size.Width * Size.Height - Size.Width * q2.X - 2 * Size.Height * q2.Y;
+            //return dot >= 0;
         }
         private Region m_region;
         private GraphicsPath m_outline;

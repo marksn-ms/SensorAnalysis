@@ -15,6 +15,9 @@ namespace WorldSim.Interface
     [Serializable]
     public class World
     {
+        private Guid m_guid;
+        public Guid Guid { get { return m_guid; } internal set { m_guid = value; } }
+
         /// <summary>
         /// These are all of the actions that an inhabitant of the world can choose from.
         /// </summary>
@@ -422,7 +425,7 @@ namespace WorldSim.Interface
             RewardScaleP_n = 1.0d;
             MinAgentNeighbors = 1;
             MaxAgentNeighbors = 4;
-         
+            Guid = Guid.NewGuid();
         }
 
 #if PerceptionHistory
@@ -1222,30 +1225,6 @@ namespace WorldSim.Interface
         public void Add(SelectableObject o)
         {
             Tiles.AddObject(o); // if it isn't in this tile, the tile should find the right tile
-
-            //double dClosest = double.PositiveInfinity;
-            //Tile tClosest = null;
-            //foreach (Tile t in Tiles.AllTiles)
-            //{
-            //    if (t.PointInRegion(o.Position))
-            //    {
-            //        t.AddObject(o);
-            //        o.Parent = t;
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        double dt = Distance(t.Center, o.Position);
-            //        if (dt < dClosest)
-            //        {
-            //            dClosest = dt;
-            //            tClosest = t;
-            //        }
-            //    }
-            //}
-            //tClosest.AddObject(o);
-            //o.Parent = tClosest;
-            //throw new ApplicationException("Inhabitant didn't go into any tile.");
         }
 
         /// <summary>

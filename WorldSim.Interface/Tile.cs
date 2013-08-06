@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
 using System.Threading;
+using System.Diagnostics;
 
 namespace WorldSim.Interface
 {
@@ -42,35 +43,48 @@ namespace WorldSim.Interface
         /// <returns>Vector to the other tile.</returns>
         public PointF VectorTo(Tile t)
         {
-            return VectorTo(this, t, World.Width);
+            return VectorTo(this.Center, t.Center, World.Width, World.Height);
         }
-        public static PointF VectorTo(Tile o, Tile t, int Width)
+        public PointF VectorTo(PointF t)
         {
-            PointF v = new PointF(t.Center.X - o.Center.X, t.Center.Y - o.Center.Y);
+            return VectorTo(this.Center, t, World.Width, World.Height);
+        }
+        public static PointF VectorTo(PointF o, PointF t, int Width, int Height)
+        {
+            PointF v = new PointF(t.X - o.X, t.Y - o.Y);
             if (v.X > 0) // target is to the right of me
             {
-                if (t.Center.X - (o.Center.X + Width) < v.X) // shorter to go left
-                    v.X = t.Center.X - (o.Center.X + Width);
+                if (Math.Abs(t.X - (o.X + Width)) < Math.Abs(v.X)) // shorter to go left
+                    v.X = t.X - (o.X + Width);
             }
             else // target is to the left of me
             {
-                if (t.Center.X + Width - o.Center.X < v.X) // shorter to go right
-                    v.X = t.Center.X + Width - o.Center.X;
+                if (t.X + Width - o.X < Math.Abs(v.X)) // shorter to go right
+                    v.X = t.X + Width - o.X;
             }
             if (v.Y > 0) // target is below me
             {
-                if (t.Center.Y - (o.Center.Y + Width) < v.Y) // shorter to go up
-                    v.Y = t.Center.Y - (o.Center.Y + Width);
+                if (Math.Abs(t.Y - (o.Y + Height)) < Math.Abs(v.Y)) // shorter to go up
+                    v.Y = t.Y - (o.Y + Height);
             }
             else // target is above me
             {
-                if (t.Center.Y + Width - o.Center.Y < v.Y) // shorter to go down
-                    v.Y = t.Center.Y + Width - o.Center.Y;
+                if (t.Y + Height - o.Y < Math.Abs(v.Y)) // shorter to go down
+                    v.Y = t.Y + Height - o.Y;
             }
             // normalize vector
             float length = (float)Math.Sqrt(v.X * v.X + v.Y * v.Y);
-            v.X /= length;
-            v.Y /= length;
+            if (length == 0)
+            {
+                v.X = 0;
+                v.Y = 0;
+            }
+            else
+            {
+                v.X /= length;
+                v.Y /= length;
+            }
+            Debug.Assert(!Double.IsNaN(v.X) && !Double.IsNaN(v.Y));
             return v;
         }
 

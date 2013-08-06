@@ -95,14 +95,14 @@ namespace MobileSensorAgents
 
 #else
                 // use roulette wheel to pick move
-                RouletteWheel<World.Actions> rw = new RouletteWheel<World.Actions>(World.Random);
-                rw.Add(0.1d + World.Reward(this, iNeighbors, null), World.Actions.actStay);
+                RouletteWheel<World.Actions> rw = new RouletteWheel<World.Actions>(Parent.World.Random);
+                rw.Add(0.1d + Parent.World.Reward(this, iNeighbors, null), World.Actions.actStay);
                 PointF ptOld = Position;
                 for (int m = 0; m < m_pts.GetUpperBound(0); m++)
                 {
                     PointF ptMove = new PointF((int)m_pts[m].X, (int)m_pts[m].Y);
                     Position = new PointF(Position.X + ptMove.X, Position.Y + ptMove.Y);
-                    rw.Add(0.1d + World.Reward(this, iNeighbors, null), World.Actions.Min + m);
+                    rw.Add(0.1d + Parent.World.Reward(this, iNeighbors, null), World.Actions.Min + m);
                 }
                 Position = ptOld;
                 Action = rw.Choice;

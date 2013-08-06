@@ -7,28 +7,21 @@ using System.Text;
 using System.Threading.Tasks;
 using WorldSim.Interface;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace DisabledMobility
 {
     [Serializable]
-    public class DisabledMobilitySensor2 : Inhabitant
+    public class DisabledMobilitySensor2 : DisabledMobilitySensor
     {
-        private int m_expiration;
-        [CategoryAttribute("Behavior"), ReadOnlyAttribute(true)]
-        public int Expiration { get { return m_expiration; } set { m_expiration = value; } }
-
-        private PointF m_endActionVector;
-        private bool m_actionSet;
-        private World.Actions m_action;
-        [CategoryAttribute("Initialization"), ReadOnlyAttribute(true)]
-        public World.Actions DefaultAction { get { return m_action; } set { m_action = value; } }
+        private PointF m_endActionTarget;
 
         /// <summary>
         /// Constructor.  Set default values.
         /// </summary>
         public DisabledMobilitySensor2()
+            : base()
         {
-            m_actionSet = false;
         }
 
         /// <summary>
@@ -40,25 +33,15 @@ namespace DisabledMobility
         {
             base.Tick();
 
-            if (m_expiration > SensorRange)
+            if (Expiration > 0 && Expiration <= SensorRange)
             {
-                if (!m_actionSet)
-                {
-                    m_actionSet = true;
-                    DefaultAction = (World.Actions)Parent.World.Random.Next((int)World.Actions.Max); // returns 0-15 (not actStay)
-                }
-                Action = DefaultAction;
-                m_expiration--;
-            }
-            else if (m_expiration > 0)
-            {
-                if (m_endActionVector.IsEmpty)
+                if (m_endActionTarget.IsEmpty)
                 {
                     // locate a vacant cell nearby and head for that location
                     int Max = -1;
                     foreach (Tile t in Parent.Neighbors)
-                        Max = Math.Max(t.Objects(typeof(DisabledMobilitySensor2)).Count(), Max);
-                    RouletteWheel<Tile> r = new RouletteWheel<Tile>(World.Random);
+                        Max = Math.Max(t.Objects(typeof(DisabledMobilitySensor)).Count(), Max);
+                    RouletteWheel<Tile> r = new RouletteWheel<Tile>(Parent.World.Random);
                     foreach (Tile t in Parent.Neighbors)
                         r.Add(0.1 + Max - t.Objects(typeof(DisabledMobilitySensor)).Count(), t);
 
@@ -66,14 +49,15 @@ namespace DisabledMobility
 
                     // now just head in that direction by setting vector to the direction of that tile
                     // (remember the tile north of us may be on the other (south) end of the grid)
-                    m_endActionVector = Parent.VectorTo(target);
+                    m_endActionTarget = target.Center;
                 }
-                Velocity = m_endActionVector;
+                PointF v = Tile.VectorTo(Position, m_endActionTarget, Parent.World.Width, Parent.World.Height);
+                Velocity = new PointF(v.X * 2, v.Y * 2);
+                //Debug.WriteLine("DisabledMobilitySensor2.Tick: Position({0},{1}), Target({2},{3}), Velocity({4},{5}), Sensor({6},{7}).",
+                //    Parent.Center.X, Parent.Center.Y, m_endActionTarget.X, m_endActionTarget.Y,
+                //    Velocity.X, Velocity.Y, Position.X, Position.Y);
                 Action = World.Actions.actUseVelocity;
-                m_expiration--;
             }
-            else
-                Action = World.Actions.actStay;
         }
 
         /// <summary>

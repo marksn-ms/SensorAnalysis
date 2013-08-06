@@ -36,6 +36,45 @@ namespace WorldSim.Interface
         public bool Polled { get { return m_polled; } set { m_polled = value; } }
 
         /// <summary>
+        /// This method provides the vector indicating direction and distance to another tile.
+        /// </summary>
+        /// <param name="t">The target tile</param>
+        /// <returns>Vector to the other tile.</returns>
+        public PointF VectorTo(Tile t)
+        {
+            return VectorTo(this, t, World.Width);
+        }
+        public static PointF VectorTo(Tile o, Tile t, int Width)
+        {
+            PointF v = new PointF(t.Center.X - o.Center.X, t.Center.Y - o.Center.Y);
+            if (v.X > 0) // target is to the right of me
+            {
+                if (t.Center.X - (o.Center.X + Width) < v.X) // shorter to go left
+                    v.X = t.Center.X - (o.Center.X + Width);
+            }
+            else // target is to the left of me
+            {
+                if (t.Center.X + Width - o.Center.X < v.X) // shorter to go right
+                    v.X = t.Center.X + Width - o.Center.X;
+            }
+            if (v.Y > 0) // target is below me
+            {
+                if (t.Center.Y - (o.Center.Y + Width) < v.Y) // shorter to go up
+                    v.Y = t.Center.Y - (o.Center.Y + Width);
+            }
+            else // target is above me
+            {
+                if (t.Center.Y + Width - o.Center.Y < v.Y) // shorter to go down
+                    v.Y = t.Center.Y + Width - o.Center.Y;
+            }
+            // normalize vector
+            float length = (float)Math.Sqrt(v.X * v.X + v.Y * v.Y);
+            v.X /= length;
+            v.Y /= length;
+            return v;
+        }
+
+        /// <summary>
         /// This property represents the amount of some resource this tile has stockpiled.
         /// The value is represented as a percentage, or a value between 0.0 and 1.0.
         /// </summary>

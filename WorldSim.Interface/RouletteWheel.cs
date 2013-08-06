@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WorldSim.Interface
 {
-    public class RouletteWheel
+    public class RouletteWheel<theType>
     {
         private System.Collections.ArrayList m_list;
         private static ECRandom m_rand;
@@ -12,15 +12,15 @@ namespace WorldSim.Interface
         private class RWElement
         {
             // properties
-            private RouletteWheel m_parent;
-            public RouletteWheel Parent { get { return m_parent; } }
+            private RouletteWheel<theType> m_parent;
+            public RouletteWheel<theType> Parent { get { return m_parent; } }
             private double m_dValue;
             public double Value { get { return m_dValue; } }
-            private System.Object m_objElement;
-            public System.Object Element { get { return m_objElement; } }
+            private theType m_objElement;
+            public theType Element { get { return m_objElement; } }
 
             // constructor
-            public RWElement(RouletteWheel parent, double dValue, System.Object objElement)
+            public RWElement(RouletteWheel<theType> parent, double dValue, theType objElement)
             {
                 m_parent = parent;
                 m_dValue = dValue;
@@ -40,7 +40,7 @@ namespace WorldSim.Interface
         /// </param>
         /// <param name="anObject">Object to add
         /// </param>
-        public virtual void Add(double dValue, System.Object anObject)
+        public virtual void Add(double dValue, theType anObject)
         {
             if (double.IsNaN(dValue) || dValue < 0)
                 throw new ApplicationException("Bad value added to Roulettewheel, " + dValue);
@@ -51,7 +51,7 @@ namespace WorldSim.Interface
         /// <summary> remove removes an object from the instances internal list of objects.</summary>
         /// <param name="AnObject">the object to remove
         /// </param>
-        public virtual void Remove(System.Object anObject)
+        public virtual void Remove(theType anObject)
         {
             while(m_list.Contains(anObject))
                 m_list.Remove(anObject);
@@ -79,7 +79,7 @@ namespace WorldSim.Interface
         /// </summary>
         /// <returns> chosen Object
         /// </returns>
-        public virtual System.Object Choice
+        public virtual theType Choice
         {
             get
             {
@@ -93,7 +93,8 @@ namespace WorldSim.Interface
                     if ((sum += e.Value) >= thresh)
                         return e.Element;
                 }
-                return null;
+                //return null;
+                throw new ApplicationException("RouletteWheel: Could not find a suitable choice and one should have been found.");
             }
         }
 

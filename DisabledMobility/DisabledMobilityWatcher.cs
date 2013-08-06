@@ -61,6 +61,12 @@ namespace DisabledMobility
                     if (d.Expiration < e.Tick)
                         nDisabled++;
                 }
+                foreach (DisabledMobilitySensor2 d in World.Objects(typeof(DisabledMobilitySensor2)))
+                {
+                    nSensors++;
+                    if (d.Expiration < e.Tick)
+                        nDisabled++;
+                }
 
                 // num_tiles_covered, num_tiles_uncovered, percent_tiles_covered
                 // this counts the static number covered after each tick
@@ -72,7 +78,7 @@ namespace DisabledMobility
                 int nNotPolled = 0;
                 foreach (Tile t in World.Tiles.AllTiles)
                 {
-                    if (t.HasObjects(typeof(DisabledMobilitySensor)))
+                    if (t.HasObjects(typeof(DisabledMobilitySensor)) || t.HasObjects(typeof(DisabledMobilitySensor2)))
                     {
                         // this tile is covered
                         nTilesCovered++;
@@ -121,7 +127,7 @@ namespace DisabledMobility
             {
                 foreach (Tile t in World.Tiles.AllTiles)
                 {
-                    if (t.HasObjects(typeof(DisabledMobilitySensor)))
+                    if (t.HasObjects(typeof(DisabledMobilitySensor)) || t.HasObjects(typeof(DisabledMobilitySensor2)))
                         m_tilesPolled[t] = e.Tick;
                 }
             }

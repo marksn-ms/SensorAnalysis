@@ -49,7 +49,7 @@ namespace WorldSim.Interface
         {
             return VectorTo(this.Center, t, World.Width, World.Height);
         }
-        public static PointF VectorTo(PointF o, PointF t, int Width, int Height)
+        public static PointF VectorTo(PointF o, PointF t, int Width, int Height, bool Normalize = true)
         {
             PointF v = new PointF(t.X - o.X, t.Y - o.Y);
             if (v.X > 0) // target is to the right of me
@@ -72,17 +72,20 @@ namespace WorldSim.Interface
                 if (t.Y + Height - o.Y < Math.Abs(v.Y)) // shorter to go down
                     v.Y = t.Y + Height - o.Y;
             }
-            // normalize vector
-            float length = (float)Math.Sqrt(v.X * v.X + v.Y * v.Y);
-            if (length == 0)
+            if (Normalize)
             {
-                v.X = 0;
-                v.Y = 0;
-            }
-            else
-            {
-                v.X /= length;
-                v.Y /= length;
+                // normalize vector
+                float length = (float)Math.Sqrt(v.X * v.X + v.Y * v.Y);
+                if (length == 0)
+                {
+                    v.X = 0;
+                    v.Y = 0;
+                }
+                else
+                {
+                    v.X /= length;
+                    v.Y /= length;
+                }
             }
             Debug.Assert(!Double.IsNaN(v.X) && !Double.IsNaN(v.Y));
             return v;

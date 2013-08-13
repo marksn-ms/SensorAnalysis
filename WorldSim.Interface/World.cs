@@ -747,7 +747,7 @@ namespace WorldSim.Interface
                     // normalize vector
                     float length = (float)Math.Sqrt(i.Velocity.X * i.Velocity.X + i.Velocity.Y * i.Velocity.Y);
                     if (length != 0)
-                        i.Velocity = new PointF(i.Velocity.X / length, i.Velocity.Y / length);
+                        i.Velocity = new PointF(3.0f * i.Velocity.X / length, 3.0f * i.Velocity.Y / length);
                     break;
                 default: i.Velocity = new PointF((float)(3.0f * Math.Sin(((int)i.Action) * 22.5f * Math.PI / 180)), 
                     (float)(3.0f * Math.Cos(((int)i.Action) * 22.5f * Math.PI / 180))); 

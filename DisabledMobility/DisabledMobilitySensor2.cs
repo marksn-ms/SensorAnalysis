@@ -51,8 +51,7 @@ namespace DisabledMobility
                     // (remember the tile north of us may be on the other (south) end of the grid)
                     m_endActionTarget = target.Center;
                 }
-                PointF v = Tile.VectorTo(Position, m_endActionTarget, Parent.World.Width, Parent.World.Height);
-                Velocity = new PointF(v.X * 2, v.Y * 2);
+                Velocity = Tile.VectorTo(Position, m_endActionTarget, Parent.World.Width, Parent.World.Height);
                 //Debug.WriteLine("DisabledMobilitySensor2.Tick: Position({0},{1}), Target({2},{3}), Velocity({4},{5}), Sensor({6},{7}).",
                 //    Parent.Center.X, Parent.Center.Y, m_endActionTarget.X, m_endActionTarget.Y,
                 //    Velocity.X, Velocity.Y, Position.X, Position.Y);

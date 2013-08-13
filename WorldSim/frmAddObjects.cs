@@ -50,7 +50,7 @@ namespace WorldSim
                 propertyGrid1.SelectedObject = Activator.CreateInstance(m_agentTypes[lstAgentType.SelectedItem.ToString()], null);
                 textBox1.Text = ((SelectableObject)propertyGrid1.SelectedObject).Info();
             }
-            catch(Exception ex)
+            catch //(Exception ex)
             {
                 MessageBox.Show("Unable to create that object, try another.");
                 propertyGrid1.SelectedObject = null;

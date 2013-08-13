@@ -379,6 +379,7 @@ namespace WorldSim
             for (int i = 0; i < nCount; i++)
             {
                 SelectableObject inh = (SelectableObject)Activator.CreateInstance(t, o);
+                inh.World = this.m_world.World;
                 //inh.SensorRange = nSensorRange;
                 lst.Add(inh);
             }
@@ -438,6 +439,7 @@ namespace WorldSim
                             pi.SetValue(o, Convert.ChangeType(props[ttps],pi.PropertyType), null);
                         }
                         SelectableObject so = o as SelectableObject;
+                        so.World = this.m_world.World;
                         Debug.Assert(so != null);
                         lstInhabitants.Add(so);
                     }

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisabledMobilitySensorProxy.cs" />
     <Compile Include="DisabledMobilitySensor2.cs" />
     <Compile Include="DisabledMobilityDeployer.cs" />
     <Compile Include="DisabledMobilitySensor.cs" />

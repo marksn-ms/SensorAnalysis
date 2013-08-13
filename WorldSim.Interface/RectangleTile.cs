@@ -108,10 +108,10 @@ namespace WorldSim.Interface
             List<List<Tile>> sheet = new List<List<Tile>>();
             List<Tile> list = new List<Tile>();
             // sheet[row][col]
-            for (int i = 0, y = 0; i < size.Height; i++, y+=sizeTile.Height)
+            for (int i = 0, x = 0; i < size.Height; i++, x+=sizeTile.Height)
             {
                 sheet.Add(new List<Tile>()); // add row
-                for (int j = 0, x = 0; j < size.Width; j++, x+=sizeTile.Width)
+                for (int j = 0, y = 0; j < size.Width; j++, y+=sizeTile.Width)
                 {
                     RectangleTile rtNew = new RectangleTile(new Point(x, y), sizeTile);
                     rtNew.World = w;
@@ -131,6 +131,22 @@ namespace WorldSim.Interface
                     rt.South = (RectangleTile)sheet[j][(i + 1) % size.Height];
                     rt.West = (RectangleTile)sheet[(j + size.Width - 1) % size.Width][i];
                     rt.East = (RectangleTile)sheet[(j + 1) % size.Width][i];
+                }
+            }
+            // now make sure all the connections are correct
+            for (int i = 0; i < size.Height; i++)
+            {
+                for (int j = 0; j < size.Width; j++)
+                {
+                    RectangleTile rt = (RectangleTile)sheet[j][i];
+                    Debug.Assert(rt.North.South == rt);
+                    Debug.Assert(rt.South.North == rt);
+                    Debug.Assert(rt.East.West == rt);
+                    Debug.Assert(rt.West.East == rt);
+                    Debug.Assert(rt.North.East == rt.East.North);
+                    Debug.Assert(rt.North.West == rt.West.North);
+                    Debug.Assert(rt.South.East == rt.East.South);
+                    Debug.Assert(rt.South.West == rt.West.South);
                 }
             }
             return list[0];

@@ -58,7 +58,7 @@ namespace WorldSim.Interface
             m_list.TrimToSize();
         }
 
-        /// <summary> sum_values calculates the sum of absolute wheigths of elements contained
+        /// <summary> sum_values calculates the sum of absolute weights of elements contained
         /// in the instances list.
         /// </summary>
         /// <returns> sum of the weights
@@ -74,6 +74,9 @@ namespace WorldSim.Interface
             }
         }
 
+        private bool m_bSmallValuesBetter;
+        public bool SmallValuesBetter { get { return m_bSmallValuesBetter; } set { m_bSmallValuesBetter = true; } }
+
         /// <summary> choice performs an roulettewheel-choice with the elements of the
         /// instances list.
         /// </summary>
@@ -83,15 +86,28 @@ namespace WorldSim.Interface
         {
             get
             {
-                double sum = 0;
-                double thresh = m_rand.NextDouble();
-                if (thresh < 0)
-                    thresh = -thresh;
-                thresh = thresh * Sum;
-                foreach (RWElement e in m_list)
+                if (SmallValuesBetter)
                 {
-                    if ((sum += e.Value) >= thresh)
-                        return e.Element;
+                    double theSum = Sum;
+                    double listSum = theSum * m_list.Count - theSum;
+                    double thresh = Math.Abs(m_rand.NextDouble()) * listSum;
+                    double sum = 0;
+                    foreach (RWElement e in m_list)
+                    {
+                        if ((sum += (theSum - e.Value)) >= thresh)
+                            return e.Element;
+                    }
+                }
+                else
+                {
+                    double listSum = Sum;
+                    double sum = 0;
+                    double thresh = Math.Abs(m_rand.NextDouble()) * listSum;
+                    foreach (RWElement e in m_list)
+                    {
+                        if ((sum += e.Value) >= thresh)
+                            return e.Element;
+                    }
                 }
                 //return null;
                 throw new ApplicationException("RouletteWheel: Could not find a suitable choice and one should have been found.");
@@ -99,9 +115,10 @@ namespace WorldSim.Interface
         }
 
         /// <summary> removes all entries from Roulettewheel.</summary>
-        public virtual void Clear()
+        public virtual RouletteWheel<theType> Clear()
         {
             m_list.Clear();
+            return this;
         }
     }
 }

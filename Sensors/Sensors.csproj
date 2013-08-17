@@ -107,7 +107,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)WorldSim\$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

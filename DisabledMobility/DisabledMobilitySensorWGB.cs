@@ -123,7 +123,8 @@ namespace DisabledMobility
                 if (whiteTiles.Count() > 0)
                 {
                     // if there's an unoccupied tile nearby and nobody headed that direction, we should head that way
-                    ActionTarget = whiteTiles.First(); // [World.Random.Next(whiteTiles.Count())].Center;
+                    //ActionTarget = whiteTiles.First(); 
+                    ActionTarget = whiteTiles[World.Random.Next(whiteTiles.Count())];
                 }
                 else
                 {

@@ -12,8 +12,7 @@ namespace MobileSensorAgents
     {
         public IntentionalInhabitant()
             : base()
-        {
-            
+        {            
             BackgroundColor = Color.CadetBlue;
             m_pts = new PointF[(int)World.Actions.Max - (int)World.Actions.Min + 1];
             for (int i = 0; i < (int)World.Actions.Max - (int)World.Actions.Min + 1; i++)

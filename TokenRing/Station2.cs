@@ -17,30 +17,23 @@ namespace TokenRing
         private DateTime m_dateLastPing;
         private int m_tickCount = 0;
 
-        private Station2 m_nextStation;
-        public Station2 Next { get { return m_nextStation; } set { m_nextStation = value; } }
-
-        private SelectableObjectListItem m_tokenAgent;
-        public SelectableObjectListItem TokenAgent { get { return m_tokenAgent; } set { m_tokenAgent = value; } }
-
-        private static Pen m_penArrow = null;
-        public Pen Arrow { get { return m_penArrow; } set { m_penArrow = value; } }
-
-        private Guid m_token;
-        public Guid Token { get { return m_token; } set { m_token = value; } }
+        public Station2 Next { get; set; }
+        public SelectableObjectListItem TokenAgent { get; set; }
+        public Pen Arrow { get; set; }
+        public Guid Token { get; set; }
 
         /// <summary>
         /// This is the list of mobile agents about which this station is aware
         /// along with the last successful ping datetime
         /// </summary>
-        public List<SelectableObjectListItem> m_agents;
+        public List<SelectableObjectListItem> Agents { get; set; }
 
         /// <summary>
         /// Constructor.  Initialize data members.
         /// </summary>
         public Station2()
         {
-            m_agents = new List<SelectableObjectListItem>();
+            Agents = new List<SelectableObjectListItem>();
 
             m_dateLastPing = DateTime.Now;
 
@@ -65,7 +58,7 @@ namespace TokenRing
             else if (Selected || (Parent != null && Parent.Selected))
             {
                 b = m_brushSelected;
-                foreach (SelectableObjectListItem o in m_agents)
+                foreach (SelectableObjectListItem o in Agents)
                 {
                     Point startPoint = new Point((int)((o.agent.Position.X + (o.agent.Size.Width / 2)) * fScale), (int)((o.agent.Position.Y + (o.agent.Size.Height / 2)) * fScale));
                     Point endPoint = new Point((int)(this.Position.X * fScale), (int)(this.Position.Y * fScale));
@@ -99,12 +92,12 @@ namespace TokenRing
             // agent, then pick the first agent as the current agent.
             if (Token != Guid.Empty)
             {
-                if (m_agents.Count > 0)
+                if (Agents.Count > 0)
                 {
                     if (TokenAgent == null)
                     {
-                        m_tokenAgent = m_agents[0];
-                        Outbox.Add(new TheTokenIsYoursMessage(this, Token, m_tokenAgent.agent));
+                        TokenAgent = Agents[0];
+                        Outbox.Add(new TheTokenIsYoursMessage(this, Token, TokenAgent.agent));
                     }
                 }
                 else
@@ -130,22 +123,22 @@ namespace TokenRing
             // if it has been over two seconds since hearing from an agent
             // then prune agent from agent list
             List<SelectableObjectListItem> lstDelete = new List<SelectableObjectListItem>();
-            foreach (SelectableObjectListItem m in m_agents)
+            foreach (SelectableObjectListItem m in Agents)
             {
                 if ((m_tickCount - m.lastTick) > 4)
                 {
                     lstDelete.Add(m);
 
-                    if (m_tokenAgent == m)
+                    if (TokenAgent == m)
                     {
-                        int nIndex = m_agents.IndexOf(m);
+                        int nIndex = Agents.IndexOf(m);
                         if (nIndex >= 0)
                         {
-                            if (nIndex < m_agents.Count - 1)
+                            if (nIndex < Agents.Count - 1)
                             {
-                                m_tokenAgent = m_agents[++nIndex];
+                                TokenAgent = Agents[++nIndex];
                                 Token = Guid.NewGuid();
-                                Outbox.Add(new TheTokenIsYoursMessage(this, Token, m_tokenAgent.agent));
+                                Outbox.Add(new TheTokenIsYoursMessage(this, Token, TokenAgent.agent));
                             }
                         }
                     }
@@ -155,7 +148,7 @@ namespace TokenRing
             foreach (SelectableObjectListItem m in lstDelete)
             {
                 World.LogResults(this.Label + " pruned " + m.agent.Label);
-                m_agents.Remove(m);
+                Agents.Remove(m);
             }
         }
 
@@ -175,7 +168,7 @@ namespace TokenRing
                         RegisterMobileAgentMessage tmpM = (RegisterMobileAgentMessage)m;
 
                         // if this is the tower intended then register.
-                        if (tmpM.recipient.Label == this.Label)
+                        if (tmpM.Recipient.Label == this.Label)
                         {
                             registerMobileAgent(tmpM);
                         }
@@ -201,18 +194,18 @@ namespace TokenRing
                         }
                         else
                         {
-                            int nIndex = m_agents.IndexOf(m_tokenAgent);
+                            int nIndex = Agents.IndexOf(TokenAgent);
                             if (nIndex >= 0)
                             {
-                                if (nIndex < m_agents.Count - 1)
+                                if (nIndex < Agents.Count - 1)
                                 {
-                                    m_tokenAgent = m_agents[++nIndex];
-                                    Outbox.Add(new TheTokenIsYoursMessage(this, Token, m_tokenAgent.agent));
+                                    TokenAgent = Agents[++nIndex];
+                                    Outbox.Add(new TheTokenIsYoursMessage(this, Token, TokenAgent.agent));
                                 }
                                 else
                                 {
                                     Outbox.Add(new TheTokenIsYoursRoutedMessage(this, Next, Token));
-                                    m_tokenAgent = null;
+                                    TokenAgent = null;
                                     Token = Guid.Empty;
                                 }
                             }
@@ -222,17 +215,17 @@ namespace TokenRing
                     case "TokenRing.TextMessage":
                         World.LogResults(m.ToString() + " received");
                         TextMessage tm = (TextMessage)m;
-                        if (tm.Sender != m_tokenAgent.agent)
+                        if (tm.Sender != TokenAgent.agent)
                         {
                             Outbox.Add(new InvalidTokenMessage(this, tm.Sender));
                         }
                         else
                         {
-                            foreach (SelectableObjectListItem i in m_agents)
+                            foreach (SelectableObjectListItem i in Agents)
                             {
-                                if (i.agent.Label == tm.RecipentLabel)
+                                if (i.agent.Label == tm.RecipientLabel)
                                 {
-                                    Outbox.Add(new TextMessage(tm.Text, tm.Sender, tm.RecipentLabel));
+                                    Outbox.Add(new TextMessage(tm.Text, tm.Sender, tm.RecipientLabel));
                                     tm = null;
                                     break;
                                 }
@@ -245,20 +238,20 @@ namespace TokenRing
                         TextRoutedMessage trm = (TextRoutedMessage)m;
                         if (trm.Sender == this) // went all the way around and back to ourself
                         {
-                            Outbox.Add(new TextMessage(trm.RecipentLabel + " is not available.", this, trm.Sender.Label));
+                            Outbox.Add(new TextMessage(trm.RecipientLabel + " is not available.", this, trm.Sender.Label));
                             break;
                         }
-                        foreach (SelectableObjectListItem i in m_agents)
+                        foreach (SelectableObjectListItem i in Agents)
                         {
-                            if (i.agent.Label == trm.RecipentLabel)
+                            if (i.agent.Label == trm.RecipientLabel)
                             {
-                                Outbox.Add(new TextMessage(trm.Text, trm.Sender, trm.RecipentLabel));
+                                Outbox.Add(new TextMessage(trm.Text, trm.Sender, trm.RecipientLabel));
                                 trm = null;
                                 break;
                             }
                         }
                         if (trm != null)
-                            Outbox.Add(new TextRoutedMessage(trm.Text, trm.Sender, Next, trm.RecipentLabel));
+                            Outbox.Add(new TextRoutedMessage(trm.Text, trm.Sender, Next, trm.RecipientLabel));
                         break;
 
                     default:
@@ -269,13 +262,13 @@ namespace TokenRing
 
         private void updateMobileAgent(SelectableObject Sender)
         {
-            for (int i = 0; i < m_agents.Count; i++)
+            for (int i = 0; i < Agents.Count; i++)
             {
-                if (m_agents[i].agent.Label == Sender.Label)
+                if (Agents[i].agent.Label == Sender.Label)
                 {
-                    SelectableObjectListItem itm = m_agents[i];
+                    SelectableObjectListItem itm = Agents[i];
                     itm.lastTick = m_tickCount;
-                    m_agents[i] = itm;
+                    Agents[i] = itm;
                 }
             }
         }
@@ -289,7 +282,7 @@ namespace TokenRing
             SelectableObjectListItem ma = new SelectableObjectListItem();
             ma.agent = m.Sender;
             ma.lastTick = m_tickCount;
-            m_agents.Add(ma);
+            Agents.Add(ma);
         }
 
         /// <summary>
@@ -299,13 +292,13 @@ namespace TokenRing
         public void releaseMobileAgent(SelectableObject m)
         {
             List<SelectableObjectListItem> lstDelete = new List<SelectableObjectListItem>();
-            for (int i = 0; i < m_agents.Count; i++)
+            for (int i = 0; i < Agents.Count; i++)
             {
-                if (m_agents[i].agent.Label == m.Label)
-                    lstDelete.Add(m_agents[i]);
+                if (Agents[i].agent.Label == m.Label)
+                    lstDelete.Add(Agents[i]);
             }
             foreach (SelectableObjectListItem itemDelete in lstDelete)
-                m_agents.Remove(itemDelete);
+                Agents.Remove(itemDelete);
         }
     }
 }

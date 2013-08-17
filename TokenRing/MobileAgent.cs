@@ -23,32 +23,18 @@ namespace TokenRing
     [Serializable]
     public class MobileAgent : SelectableObject
     {
-        //Dictionary<SelectableObject, DateTime> m_objectsInRange;
-
         private int tickCnt = 1;
-        private SelectableObject m_parentTower = null;
-        public SelectableObject ParentTower
-        {
-            get
-            {
-                return m_parentTower;
-            }
-            set
-            {
-                m_parentTower = value;
-            }
-        }
+        public SelectableObject ParentTower { get; set; }
 
         /// <summary>
         /// This is the address book containing
         /// other mobile agent ID's for messaging.
         /// </summary>
-        private string m_addressBook;
-        public string AddressBook { get { return m_addressBook; } set { m_addressBook = value; } }
+        public string AddressBook { get; set; }
 
         public MobileAgent()
         {
-            m_addressBook = "";
+            AddressBook = "";
             BackgroundColor = System.Drawing.Color.Red;
             Size = new System.Drawing.Size(5, 5);
         }
@@ -108,7 +94,7 @@ namespace TokenRing
             // is the sending tower the same as my parent tower?
             // if so, send ping acknoledgement to let it know
             // I am still there
-            if (m_parentTower != null && Sender.Label == m_parentTower.Label)
+            if (ParentTower != null && Sender.Label == ParentTower.Label)
             {
                 Outbox.Add(new PingAckMessage(this));
             }
@@ -117,10 +103,10 @@ namespace TokenRing
                  // Decide if the pinging tower is closer than exiting parent tower.
                 // If it is closer, or unlikely equal distance, then make the ping
                 // sending tower the new parent tower, send new tower registration message
-                if (m_parentTower == null || (calcDistance(Sender.Position) <= calcDistance(m_parentTower.Position)))
+                if (ParentTower == null || (calcDistance(Sender.Position) <= calcDistance(ParentTower.Position)))
                 {
                     Outbox.Add(new RegisterMobileAgentMessage(this, Sender));
-                    m_parentTower = Sender;
+                    ParentTower = Sender;
                 }
             }
         }

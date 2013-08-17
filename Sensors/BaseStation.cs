@@ -163,7 +163,7 @@ namespace Sensors
                 
                 // update existing record
                 mobileAgentDBListItem tempMA;
-                tempMA.location = m.newTower;
+                tempMA.location = m.NewTower;
                 tempMA.mobileAgent = mobileAgentDB[mobileAgentInList].mobileAgent;
                 tempMA.childPath = m.Sender;
                 mobileAgentDB[mobileAgentInList] = tempMA;
@@ -176,7 +176,7 @@ namespace Sensors
             {
                 // add new record
                 mobileAgentDBListItem tempMA = new mobileAgentDBListItem();
-                tempMA.location = m.newTower;
+                tempMA.location = m.NewTower;
                 tempMA.mobileAgent = m.MobileAgent;
                 tempMA.childPath = m.Sender;
                 mobileAgentDB.Add(tempMA);
@@ -186,7 +186,7 @@ namespace Sensors
             // exists
             if (!(this.parentStation.Label == this.Label))
             {
-                Outbox.Add(new UpdateMobileAgentRecordRoutedMessage(m, this, this.parentStation, m.MobileAgent, m.newTower));
+                Outbox.Add(new UpdateMobileAgentRecordRoutedMessage(m, this, this.parentStation, m.MobileAgent, m.NewTower));
 
                 //World.LogResults("BS:" + this.Label + " sent BS:" + this.parentStation.Label + " update for MA:" + m.mobileAgent.Label);
             }

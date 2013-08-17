@@ -32,27 +32,23 @@ namespace TokenRing
     /// </summary>
     public class RegisterMobileAgentMessage : Message
     {
-        private SelectableObject m_recipient;
-        public SelectableObject recipient
-        {
-            get { return m_recipient; }
-        }
+        public SelectableObject Recipient { get; private set; }
 
         public RegisterMobileAgentMessage(SelectableObject sender, SelectableObject recip)
             : base(sender)
         {
-            m_recipient = recip;
+            Recipient = recip;
         }
 
         public RegisterMobileAgentMessage(Message m, SelectableObject sender, SelectableObject recip)
             : base(m, sender)
         {
-            m_recipient = recip;
+            Recipient = recip;
         }
 
         public override string ToString()
         {
-            return base.ToString() + "," + recipient.Label;
+            return base.ToString() + "," + Recipient.Label;
         }
     }
 
@@ -61,17 +57,14 @@ namespace TokenRing
     /// </summary>
     public class TextMessage : Message
     {
-        private string m_strText;
-        public string Text { get { return m_strText; } set { m_strText = value; } }
-
-        private string m_strRecipientLabel;
-        public string RecipentLabel { get { return m_strRecipientLabel; } set { m_strRecipientLabel = value; } }
+        public string Text { get; set; }
+        public string RecipientLabel { get; set; }
 
         public TextMessage(string strText, SelectableObject sender, string strRecipientLabel)
             : base(sender)
         {
-            m_strText = strText;
-            m_strRecipientLabel = strRecipientLabel;
+            Text = strText;
+            RecipientLabel = strRecipientLabel;
         }
     }
 
@@ -80,17 +73,14 @@ namespace TokenRing
     /// </summary>
     public class TextRoutedMessage : RoutedMessage
     {
-        private string m_strText;
-        public string Text { get { return m_strText; } set { m_strText = value; } }
-
-        private string m_strRecipientLabel;
-        public string RecipentLabel { get { return m_strRecipientLabel; } set { m_strRecipientLabel = value; } }
+        public string Text { get; set; }
+        public string RecipientLabel { get; set; }
 
         public TextRoutedMessage(string strText, SelectableObject sender, SelectableObject recip, string strRecipientLabel)
             : base(sender, recip)
         {
-            m_strText = strText;
-            m_strRecipientLabel = strRecipientLabel;
+            Text = strText;
+            RecipientLabel = strRecipientLabel;
         }
     }
 
@@ -100,15 +90,8 @@ namespace TokenRing
     /// </summary>
     public class TheTokenIsYoursMessage : Message
     {
-        private Guid m_token;
-        public Guid Token
-        {
-            get { return m_token; }
-            set { m_token = value; }
-        }
-
-        private SelectableObject m_recip;
-        public SelectableObject Recipient { get { return m_recip; } set { m_recip = value; } }
+        public Guid Token { get; set; }
+        public SelectableObject Recipient { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TheTokenIsYoursMessage"/> class.
@@ -119,8 +102,8 @@ namespace TokenRing
         public TheTokenIsYoursMessage(SelectableObject sender, Guid token, SelectableObject recip)
             : base(sender)
         {
-            m_token = token;
-            m_recip = recip;
+            Token = token;
+            Recipient = recip;
         }
     }
 
@@ -130,8 +113,7 @@ namespace TokenRing
     /// </summary>
     public class InvalidTokenMessage : Message
     {
-        private SelectableObject m_recip;
-        public SelectableObject Recipient { get { return m_recip; } set { m_recip = value; } }
+        public SelectableObject Recipient { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TheTokenIsYoursMessage"/> class.
@@ -141,7 +123,7 @@ namespace TokenRing
         public InvalidTokenMessage(SelectableObject sender, SelectableObject recip)
             : base(sender)
         {
-            m_recip = recip;
+            Recipient = recip;
         }
     }
 
@@ -150,12 +132,7 @@ namespace TokenRing
     /// </summary>
     public class TheTokenIsYoursRoutedMessage : RoutedMessage
     {
-        private Guid m_token;
-        public Guid Token
-        {
-            get { return m_token; }
-            set { m_token = value; }
-        }
+        public Guid Token { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TheTokenIsYoursRoutedMessage"/> class.

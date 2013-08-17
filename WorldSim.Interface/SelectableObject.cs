@@ -20,11 +20,6 @@ namespace WorldSim.Interface
         private Color m_clrFore;
         private Color m_clrBack;
         private Color m_clrSelected;
-        private bool m_bSelected;
-        private bool m_bFocus;
-        private PointF m_position;
-        private SizeF m_size;
-        private World m_world;
         private PropertyBag m_bag;
         public PropertyBag Properties
         {
@@ -57,32 +52,16 @@ namespace WorldSim.Interface
         public Color SelectedColor { get { return m_clrSelected; } set { m_clrSelected = value; m_brushSelected = new SolidBrush(value); } }
         /// <summary>Returns true if this object is currently selected.</summary>
         [CategoryAttribute("Appearance"), ReadOnlyAttribute(true)]
-        public bool Selected
-        {
-            get { return m_bSelected; }
-            set { m_bSelected = value; }
-        }
+        public bool Selected { get; set; }
         /// <summary>Returns true if this object currently has the focus.</summary>
         [CategoryAttribute("Appearance"), ReadOnlyAttribute(true)]
-        public bool Focus
-        {
-            get { return m_bFocus; }
-            set { m_bFocus = value; }
-        }
+        public bool Focus { get; set; }
         /// <summary>The position (in world coordinates) of this object.</summary>
         [CategoryAttribute("Behavior")]
-        public virtual PointF Position
-        {
-            get { return m_position; }
-            set { m_position = value; }
-        }
+        public virtual PointF Position { get; set; }
         /// <summary>Returns the Size (width and height) of this object (in world coordinates).</summary>
         [CategoryAttribute("Appearance")]
-        public virtual SizeF Size
-        {
-            get { return m_size; }
-            set { m_size = value; }
-        }
+        public virtual SizeF Size { get; set; }
         /// <summary>Returns the point that is the center of this object's bounding sphere.</summary>
         [CategoryAttribute("Behavior"), ReadOnlyAttribute(true)]
         public PointF Center
@@ -101,36 +80,18 @@ namespace WorldSim.Interface
         [CategoryAttribute("Behavior"), ReadOnlyAttribute(true)]
         public virtual double Area
         {
-            get { return Math.PI * m_size.Width * m_size.Width / 4; }
+            get { return Math.PI * Size.Width * Size.Width / 4; }
         }
-        private char m_cSymbol; // the symbol used to represent this object in sensor
-        public char Symbol
-        {
-            get { return m_cSymbol; }
-            set { m_cSymbol = value; }
-        }
-        private Tile m_tileParent; // tile I inhabit
-        public Tile Parent
-        {
-            get { return m_tileParent; }
-            set { m_tileParent = value; }
-        }
+        public char Symbol { get; set; }
+        public Tile Parent { get; set; }
+
         /// <summary>Returns a reference to the World object inhabited by this object.</summary>
-        public World World
-        {
-            get { return m_world; }
-            set { m_world = value; }
-        }
+        public World World { get; set; }
 
         /// <summary>
         /// The action chosen by this Inhabitant during its last Tick.
         /// </summary>
-        private World.Actions m_action; 
-        public World.Actions Action
-        {
-            get { return m_action; }
-            set { m_action = value; }
-        }
+        public World.Actions Action { get; set; }
 
 #if PerceptionHistory
         /// <summary>
@@ -148,22 +109,12 @@ namespace WorldSim.Interface
         /// of this object.  In a "No intertia" configuration, this will
         /// always be zero in magnitude.
         /// </summary>
-        private PointF m_velocity; // velocity (unit) vector
-        public PointF Velocity
-        {
-            get { return m_velocity; }
-            set { m_velocity = value; }
-        }
+        public PointF Velocity { get; set; }
 
         /// <summary>
         /// The label of this object (if needed).
         /// </summary>
-        private String m_strLabel;
-        public String Label
-        {
-            get { return m_strLabel; }
-            set { m_strLabel = value; }
-        }
+        public String Label { get; set; }
         static int m_nNextLabel = 100;
 
         /// <summary>
@@ -172,26 +123,26 @@ namespace WorldSim.Interface
         /// <param name="w">The world this object will inhabit.</param>
         public SelectableObject()
         {
-            m_strLabel = (m_nNextLabel++).ToString();
-            m_size = new Size(5, 5);
-            m_position = new PointF(0, 0);
-            m_bFocus = false;
-            m_bSelected = false;
+            Label = (m_nNextLabel++).ToString();
+            Size = new Size(5, 5);
+            Position = new PointF(0, 0);
+            Focus = false;
+            Selected = false;
             m_clrBack = Color.Bisque;
             m_brushBack = Brushes.Bisque;
             m_clrFore = Color.Black;
             m_penFore = Pens.Black;
             m_clrSelected = Color.LightGreen;
             m_brushSelected = Brushes.LightGreen;
-            m_cSymbol = 'z';
-            m_velocity = new PointF(0, 0);
+            Symbol = 'z';
+            Velocity = new PointF(0, 0);
 #if PerceptionHistory
             m_listHistory = new List<PerceptionActionReward>();
 #endif
             m_bag = new PropertyBag(this);
-            m_inbox = new List<Message>();
-            m_outbox = new List<Message>();
-            m_action = World.Actions.actStay;
+            Inbox = new List<Message>();
+            Outbox = new List<Message>();
+            Action = World.Actions.actStay;
         }
 
         public virtual void Draw(Graphics bitmapGraphics, Rectangle rectViewport, float fScale)
@@ -212,24 +163,10 @@ namespace WorldSim.Interface
                 throw new ApplicationException("This object has no world.");
         }
 
-        private int m_nTicksUntilExpire;
-        public int Expires
-        {
-            get { return m_nTicksUntilExpire; }
-            internal set { m_nTicksUntilExpire = value; }
-        }
+        public int Expires { get; internal set; }
 
-        private List<Message> m_inbox;
-        public List<Message> Inbox
-        {
-            get { return m_inbox; }
-        }
-
-        private List<Message> m_outbox;
-        public List<Message> Outbox
-        {
-            get { return m_outbox; }
-        }
+        public List<Message> Inbox { get; private set; }
+        public List<Message> Outbox { get; private set; }
 
         /// <summary>
         /// This method provides derived classes the ability to emit messages

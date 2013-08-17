@@ -21,12 +21,7 @@ namespace WorldSim.Interface
         /// The maximum number of turns for which this incident will
         /// be in one spot before popping up somewhere else.
         /// </summary>
-        private int m_nMaxTurnsUntilMove;
-        public int MaxTurnsUntilMove
-        {
-            get { return m_nMaxTurnsUntilMove; }
-            set { m_nMaxTurnsUntilMove = value; }
-        }
+        public int MaxTurnsUntilMove { get; set; }
 
         private int m_nTurnsUntilMove;
 
@@ -41,6 +36,7 @@ namespace WorldSim.Interface
                 m_penWave = new Pen(m_clrWave);
             }
         }
+
         /// <summary>
         /// This property represents the amount of some resource this tile has stockpiled.
         /// The value is represented as a percentage, or a value between 0.0 and 1.0.
@@ -56,6 +52,7 @@ namespace WorldSim.Interface
                 m_penWave = new Pen(BlendColors(ResourceColor, BackgroundColor, Resources));
             }
         }
+
         private Color m_clrResources;
         protected SolidBrush m_brushResources;
         private Color BlendColors(Color clrA, Color clrB, float fPercentOfA)
@@ -67,6 +64,7 @@ namespace WorldSim.Interface
 
             return Color.FromArgb(R, G, B);
         }
+        
         public Color ResourceColor
         {
             get { return m_clrResources; }
@@ -80,15 +78,15 @@ namespace WorldSim.Interface
 
         public override void Tick() 
         {
-            if (m_nMaxTurnsUntilMove < 32767)
+            if (MaxTurnsUntilMove < 32767)
             {
                 if (m_nTurnsUntilMove > 32767)
-                    m_nTurnsUntilMove = World.Random.Next(m_nMaxTurnsUntilMove);
+                    m_nTurnsUntilMove = World.Random.Next(MaxTurnsUntilMove);
 
                 // check to see if we need to move
                 if (m_nTurnsUntilMove <= 0)
                 {
-                    m_nTurnsUntilMove = World.Random.Next(m_nMaxTurnsUntilMove);
+                    m_nTurnsUntilMove = World.Random.Next(MaxTurnsUntilMove);
                     //int dx = World.Random.Next(World.Width);
                     //int dy = World.Random.Next(World.Height);
 
@@ -139,7 +137,7 @@ namespace WorldSim.Interface
             Symbol = 'x';
             WaveColor = Color.LightGray;
             ResourceColor = Color.Red;
-            m_nMaxTurnsUntilMove = Int32.MaxValue;
+            MaxTurnsUntilMove = Int32.MaxValue;
             m_nTurnsUntilMove = Int32.MaxValue;
         }
         public virtual bool IsVisible(Rectangle rectViewport, float scale)

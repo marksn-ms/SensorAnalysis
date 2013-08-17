@@ -15,8 +15,7 @@ namespace WorldSim.Interface
     [Serializable]
     public class World
     {
-        private Guid m_guid;
-        public Guid Guid { get { return m_guid; } internal set { m_guid = value; } }
+        public Guid Guid { get; set; }
 
         /// <summary>
         /// These are all of the actions that an inhabitant of the world can choose from.
@@ -84,8 +83,7 @@ namespace WorldSim.Interface
             tbiPoll, // indicate whether the tile as been covered since it was last polled
             tbiResources // indicate how much the tile has accumulated in resources
         }
-        private TileBackgroundIndicates m_tbi;
-        public TileBackgroundIndicates TileBackgroundIndication { get { return m_tbi; } set { m_tbi = value; } }
+        public TileBackgroundIndicates TileBackgroundIndication { get; set; }
 
         /// <summary>
         /// The velocity vector is represented as a vector in x,y coordinates.  This
@@ -119,56 +117,6 @@ namespace WorldSim.Interface
             double radiusNew = Math.Sqrt(velocity.X * velocity.X + velocity.Y * velocity.Y) + fUnits;
             return new PointF((float)(radiusNew * Math.Cos(theta)), (float)(radiusNew * Math.Sin(theta)));
         }
-
-        //private double m_dMaxReward;
-        //public double MaxReward { get { return m_dMaxReward; } }
-        //private double m_dAverageReward;
-        //public double AverageReward { get { return m_dAverageReward; } }
-        //private double m_dAverageRewardP_s;
-        //public double AverageRewardP_s { get { return m_dAverageRewardP_s; } }
-        //private double m_dAverageRewardP_e;
-        //public double AverageRewardP_e { get { return m_dAverageRewardP_e; } }
-        //private double m_dAverageRewardP_n;
-        //public double AverageRewardP_n { get { return m_dAverageRewardP_n; } }
-        //private double m_dEnergy;
-        //public double Energy { get { return m_dEnergy; } }
-        //private double m_dFill;
-        //public double Fill { get { return m_dFill; } }
-        //private double m_dTileResources;
-        //public double TileResources { get { return m_dTileResources; } }
-        //private double m_dIncidentResources;
-        //public double IncidentResources { get { return m_dIncidentResources; } }
-        //private double m_dSpread;
-        //public double Spread { get { return m_dSpread; } }
-        //private double m_dIncidentsCovered;
-        //private int m_nIncidentPasses; // scales m_dIncidentsCovered
-        //public double IncidentCoverage 
-        //{ 
-        //    get 
-        //    {
-        //        double dCoverage = 0.0d;
-        //        if (Monitor.TryEnter(this, 3000))
-        //        {
-        //            if (m_nIncidentPasses != 0)
-        //                dCoverage = m_dIncidentsCovered / m_nIncidentPasses;
-        //            Monitor.Exit(this);
-        //        }
-        //        return dCoverage; 
-        //    }
-        //}
-        //private int m_nIncidentInhabitantEdges;
-        //public int IncidentInhabitantEdges
-        //{
-        //    get { return m_nIncidentInhabitantEdges; }
-        //    set { m_nIncidentInhabitantEdges = value; }
-        //}
-        //private int m_nInhabitantInhabitantEdges;
-        //public int InhabitantInhabitantEdges
-        //{
-        //    get { return m_nInhabitantInhabitantEdges; }
-        //    set { m_nInhabitantInhabitantEdges = value; }
-        //}
-
 
         public int Inhabitants { get { int nCount = 0; foreach (Tile t in Tiles.AllTiles) foreach (Inhabitant i in t.Objects(typeof(Inhabitant))) nCount++; return nCount; } }
         public int Incidents { get { int nCount = 0; foreach (Tile t in Tiles.AllTiles) foreach (Incident i in t.Objects(typeof(Incident))) nCount++; return nCount; } }
@@ -252,20 +200,9 @@ namespace WorldSim.Interface
             }
         }
 
-        private Tile m_tiles; // used to organize individuals in world
-        public Tile Tiles
-        {
-            get 
-            { 
-                return m_tiles; 
-            }
-        }        
-        private String m_strTitle; // label (if needed)
-        public String Title
-        {
-            get { return m_strTitle; }
-            set { m_strTitle = value; }
-        }
+        public Tile Tiles { get; private set; }
+
+        public String Title { get; set; }
         private Size m_size;
         public Size Size
         {
@@ -273,8 +210,8 @@ namespace WorldSim.Interface
             set 
             { 
                 m_size = value; 
-                Type tTile = m_tiles.GetType();
-                m_tiles = (Tile)tTile.InvokeMember("Build", System.Reflection.BindingFlags.InvokeMethod, null, null, new object[] { this, Size, TileSize });
+                Type tTile = Tiles.GetType();
+                Tiles = (Tile)tTile.InvokeMember("Build", System.Reflection.BindingFlags.InvokeMethod, null, null, new object[] { this, Size, TileSize });
                 //m_tiles = RectangleTile.Build(this, m_size, m_tilesize); 
             }
         }
@@ -284,8 +221,8 @@ namespace WorldSim.Interface
             get { return m_tilesize; }
             set
             {
-                m_tilesize = value; Type tTile = m_tiles.GetType();
-                m_tiles = (Tile)tTile.InvokeMember("Build", System.Reflection.BindingFlags.InvokeMethod, null, null, new object[] { this, Size, TileSize });
+                m_tilesize = value; Type tTile = Tiles.GetType();
+                Tiles = (Tile)tTile.InvokeMember("Build", System.Reflection.BindingFlags.InvokeMethod, null, null, new object[] { this, Size, TileSize });
                 //m_tiles = RectangleTile.Build(this, m_size, m_tilesize);
             }
         }
@@ -310,80 +247,39 @@ namespace WorldSim.Interface
             ermP_e = 2, // reward varies as distance to incidents in sensor range
             ermInhabitantCrowding = 4 // reward (penalty, actually) varies as agents are more crowded
         }
-        private int m_nRewardMethods;
-        public int RewardMethods
-        {
-            get { return m_nRewardMethods; }
-        }
+        public int RewardMethods { get; private set; }
+
         public void Draw(Graphics bitmapGraphics, Rectangle rectViewport, float fScale)
         {
-            //if (Monitor.TryEnter(this, 5000))
+            try
             {
-                try
+                // Place code protected by the Monitor here.
+                List<SelectableObject> objects = new List<SelectableObject>();
+                foreach (Tile t in Tiles.AllTiles)
                 {
-                    // Place code protected by the Monitor here.
-                    List<SelectableObject> objects = new List<SelectableObject>();
-                    //List<Incident> incidents = new List<Incident>();
-                    //List<Inhabitant> inhabitants = new List<Inhabitant>();
-                    //List<Marker> messages = new List<Marker>();
-                    //List<SelectableObject> agents = new List<SelectableObject>();
-                    foreach (Tile t in Tiles.AllTiles)
+                    if (t.IsVisible(rectViewport, fScale))
                     {
-                        if (t.IsVisible(rectViewport, fScale))
-                        {
-                            t.Draw(bitmapGraphics, rectViewport, fScale, m_tbi);
-                            foreach (SelectableObject o in t.Objects(typeof(SelectableObject)))
-                                objects.Add(o);
-                            //foreach (Marker message in t.Objects(typeof(Marker)))
-                            //    messages.Add(message);
-                            //foreach (Incident incident in t.Objects(typeof(Incident)))
-                            //    incidents.Add(incident);
-                            //foreach (Inhabitant inhabitant in t.Objects(typeof(Inhabitant)))
-                            //    inhabitants.Add(inhabitant);
-                            //foreach (SelectableObject agent in t.Objects(typeof(SelectableObject)))
-                            //    agents.Add(agent);
-                        }
+                        t.Draw(bitmapGraphics, rectViewport, fScale, TileBackgroundIndication);
+                        foreach (SelectableObject o in t.Objects(typeof(SelectableObject)))
+                            objects.Add(o);
                     }
-                    foreach (SelectableObject dr in objects)
-                        dr.Draw(bitmapGraphics, rectViewport, fScale);
-                    //foreach (Marker m in messages)
-                    //    m.Draw(bitmapGraphics, rectViewport, fScale);
-                    //foreach (Incident dr in incidents)
-                    //    dr.Draw(bitmapGraphics, rectViewport, fScale);
-                    //foreach (Inhabitant dr in inhabitants)
-                    //    dr.Draw(bitmapGraphics, rectViewport, fScale);
-                    //foreach (SelectableObject dr in agents)
-                    //    dr.Draw(bitmapGraphics, rectViewport, fScale);
                 }
-                catch (InvalidOperationException)
-                {
-                    // just swallow it and paint them next time
-                    Debug.WriteLine("InvalidOperationException while painting.");
-                }
-                catch (Exception ex)
-                {
-                    // just swallow it and paint them next time
-                    Debug.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    //Monitor.Exit(this);
-                }
+                foreach (SelectableObject dr in objects)
+                    dr.Draw(bitmapGraphics, rectViewport, fScale);
             }
-            //else
-            //{
-                // Code to execute if the attempt times out.
-                // (just wait and try drawing again next time)
-                //System.Diagnostics.Debug.WriteLine("Drawing timed out.");
-            //}
+            catch (InvalidOperationException)
+            {
+                // just swallow it and paint them next time
+                Debug.WriteLine("InvalidOperationException while painting.");
+            }
+            catch (Exception ex)
+            {
+                // just swallow it and paint them next time
+                Debug.WriteLine(ex.Message);
+            }
         }
 
-        private ECRandom m_random;
-        public ECRandom Random
-        {
-            get { return m_random; }
-            //set { m_random = value; }
-        }
+        public ECRandom Random { get; private set; }
         
         /// <summary>
         /// Constructor for the World object.
@@ -410,15 +306,15 @@ namespace WorldSim.Interface
 
         private void Initialize(Size sizeTiles, Size sizeTile, String strTileShape, String strTitle, ECRandom r)
         {
-            m_strTitle = strTitle;
+            Title = strTitle;
             m_size = sizeTiles;
             m_tilesize = sizeTile;
             if (strTileShape.StartsWith("Hex"))
-                m_tiles = HexagonTile.Build(this, m_size, m_tilesize);
+                Tiles = HexagonTile.Build(this, m_size, m_tilesize);
             else
-                m_tiles = RectangleTile.Build(this, m_size, m_tilesize);
-            m_random = r;
-            m_nRewardMethods = (int)ermRewardMethods.ermP_e 
+                Tiles = RectangleTile.Build(this, m_size, m_tilesize);
+            Random = r;
+            RewardMethods = (int)ermRewardMethods.ermP_e 
                 | (int)ermRewardMethods.ermNumberOfNearbyInhabitants
                 | (int)ermRewardMethods.ermInhabitantCrowding;
             RewardScaleP_s = 1.0d;
@@ -1158,7 +1054,7 @@ namespace WorldSim.Interface
         public void SelectAt(Point pt, Point offset, double scale)
         {
             Point ptClick = new Point((int)((pt.X + offset.X) / scale), (int)((pt.Y + offset.Y) / scale));
-            foreach (Tile t in m_tiles.AllTiles)
+            foreach (Tile t in Tiles.AllTiles)
             {
                 if (t.PointInRegion(ptClick))
                 {
@@ -1268,13 +1164,10 @@ namespace WorldSim.Interface
         /// </summary>
         public class MessageSentEventArgs : EventArgs
         {
-            private Message m_message;
-            public Message Message { get { return m_message; } set { m_message = value; } }
-            private SelectableObject m_from;
-            public SelectableObject From { get { return m_from; } set { m_from = value; } }
-            private SelectableObject m_to;
-            public SelectableObject To { get { return m_to; } set { m_to = value; } }
-            public MessageSentEventArgs(Message m, SelectableObject from, SelectableObject to) { m_message = m; m_from = from; m_to = to; }
+            public Message Message { get; set; }
+            public SelectableObject From { get; set; }
+            public SelectableObject To { get; set; }
+            public MessageSentEventArgs(Message m, SelectableObject from, SelectableObject to) { Message = m; From = from; To = to; }
         }
         /// <summary>
         /// Delegate for the MessageSentEvent.
@@ -1292,9 +1185,8 @@ namespace WorldSim.Interface
         /// </summary>
         public class LogEventArgs
         {
-            private string m_strMessage;
-            public string Message { get { return m_strMessage; } set { m_strMessage = value; } }
-            public LogEventArgs(string m) { m_strMessage = m; }
+            public string Message { get; set; }
+            public LogEventArgs(string m) { Message = m; }
         }
         /// <summary>
         /// Delegate for the LogEvent.
@@ -1314,12 +1206,7 @@ namespace WorldSim.Interface
         /// </summary>
         public class ObjectSelectedEventArgs : EventArgs
         {
-            private SelectableObject m_selected;
-            public SelectableObject Selected
-            {
-                get { return m_selected; }
-                set { m_selected = value; }
-            }
+            public SelectableObject Selected { get; set; }
             public ObjectSelectedEventArgs(SelectableObject obj)
             {
                 Selected = obj;
@@ -1436,11 +1323,9 @@ namespace WorldSim.Interface
         /// </summary>
         public class PreTickEventArgs : EventArgs
         {
-            private int m_repeat;
-            public int Repeat { get { return m_repeat; } }
-            private int m_tick;
-            public int Tick { get {return m_tick;} }
-            public PreTickEventArgs(int tick, int repeat) { m_tick = tick; m_repeat = repeat; }
+            public int Repeat { get; private set; }
+            public int Tick { get; private set; }
+            public PreTickEventArgs(int tick, int repeat) { Tick = tick; Repeat = repeat; }
         }
         /// <summary>
         /// Delegate for the PreTickEvent.
@@ -1458,11 +1343,9 @@ namespace WorldSim.Interface
         /// </summary>
         public class PostTickEventArgs
         {
-            private int m_repeat;
-            public int Repeat { get { return m_repeat; } }
-            private int m_tick;
-            public int Tick { get { return m_tick; } }
-            public PostTickEventArgs(int tick, int repeat) { m_tick = tick; m_repeat = repeat; }
+            public int Repeat { get; private set; }
+            public int Tick { get; private set; }
+            public PostTickEventArgs(int tick, int repeat) { Tick = tick; Repeat = repeat; }
         }
         /// <summary>
         /// Delegate for the PostTickEvent.

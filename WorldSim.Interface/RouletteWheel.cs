@@ -74,8 +74,7 @@ namespace WorldSim.Interface
             }
         }
 
-        private bool m_bSmallValuesBetter;
-        public bool SmallValuesBetter { get { return m_bSmallValuesBetter; } set { m_bSmallValuesBetter = true; } }
+        public bool SmallValuesBetter { get; set; }
 
         /// <summary> choice performs an roulettewheel-choice with the elements of the
         /// instances list.

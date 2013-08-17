@@ -252,58 +252,33 @@ namespace WorldSim.Interface
 	/// </summary>
 	public class UpdatedEventArgs : EventArgs 
 	{
-		// The Property Name
-		private string strName;
-		// The Property value before the change
-		private System.Object objOldValue;
-		// The Property value after the change
-		private System.Object objNewValue;
-
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="Name">The Property Name</param>
 		/// <param name="OldValue">The Property value before the change</param>
 		/// <param name="NewValue">The Property value after the change</param>
-		public UpdatedEventArgs(string Name, System.Object OldValue, System.Object NewValue)
+		public UpdatedEventArgs(string name, System.Object oldValue, System.Object newValue)
 		{
-			this.strName = Name;
-			this.objOldValue = OldValue;
-			this.objNewValue = NewValue;
+			Name = name;
+			OldValue = oldValue;
+			NewValue = newValue;
 		}
 
 		/// <summary>
 		/// The Property Name
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return this.strName;
-			}
-		}
+		public string Name { get; private set; }
 
 		/// <summary>
 		/// The Property value before the change
 		/// </summary>
-		public System.Object OldValue
-		{
-			get
-			{
-				return this.objOldValue;
-			}
-		}
+		public System.Object OldValue { get; private set; }
 
 		/// <summary>
 		/// The Property value after the change
 		/// </summary>
-		public System.Object NewValue
-		{
-			get
-			{
-				return this.objNewValue;
-			}
-		}
+		public System.Object NewValue { get; private set; }
 	}
 	
 	/// <summary>

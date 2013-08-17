@@ -26,18 +26,7 @@ namespace Sensors
         /// <summary>
         /// This is the parent
         /// </summary>
-        private SelectableObject m_parentStation;
-        public SelectableObject parentStation
-        {
-            get
-            {
-                return m_parentStation;
-            }
-            set
-            {
-                m_parentStation = value;
-            }
-        }
+        public SelectableObject parentStation { get; set; }
 
         /// <summary>
         /// Constructor.  Initialize data members.
@@ -45,7 +34,6 @@ namespace Sensors
         public Station()
         {
             m_agents = new List<SelectableObjectListItem>();
-
             m_dateLastPing = DateTime.Now;
         }
 

@@ -15,13 +15,6 @@ namespace Sensors
         public SelectableObject agent;
         public int lastTick;
     }
-    ///// <summary>
-    ///// This is a list class to hold the mobile agent list items struct
-    ///// </summary>
-    //public class SelectableObjectList : List<SelectableObjectListItem>
-    //{
-
-    //}
 
     /// <summary>
     /// This is the base class for the mobile agent, an agent that moves
@@ -31,8 +24,6 @@ namespace Sensors
     [Serializable]
     public class MobileAgent : SelectableObject
     {
-        //Dictionary<SelectableObject, DateTime> m_objectsInRange;
-
         private int tickCnt = 1;
         private SelectableObject m_parentTower = null;
         public SelectableObject ParentTower

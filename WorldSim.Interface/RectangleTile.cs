@@ -12,30 +12,11 @@ namespace WorldSim.Interface
     [Serializable]
     public class RectangleTile : Tile
     {
-        private RectangleTile m_north;
-        public RectangleTile North
-        {
-            get { return m_north; }
-            set { m_north = value; }
-        }
-        private RectangleTile m_south;
-        public RectangleTile South
-        {
-            get { return m_south; }
-            set { m_south = value; }
-        }
-        private RectangleTile m_east;
-        public RectangleTile East
-        {
-            get { return m_east; }
-            set { m_east = value; }
-        }
-        private RectangleTile m_west;
-        public RectangleTile West
-        {
-            get { return m_west; }
-            set { m_west = value; }
-        }
+        public RectangleTile North { get; set; }
+        public RectangleTile South { get; set; }
+        public RectangleTile East { get; set; }
+        public RectangleTile West { get; set; }
+
         public override PointF Position
         {
             get
@@ -48,6 +29,7 @@ namespace WorldSim.Interface
                 m_bRegionDirty = true;
             }
         }
+
         /// <summary>Returns true if the specified point lies within the bounding rectangle of this object.</summary>
         /// <param name="pt">The point to test (in world coordinates)</param>
         /// <returns>True = the point lies within the bounding rectangle.</returns>
@@ -213,7 +195,7 @@ namespace WorldSim.Interface
         {
             Position = ptOrigin;
             Size = size;
-            m_north = m_south = m_east = m_west = this;
+            North = South = East = West = this;
             m_bRegionDirty = true;
             ForeColor = Color.FromArgb(255,255,200);
         }

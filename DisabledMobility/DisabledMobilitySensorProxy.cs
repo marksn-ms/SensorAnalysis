@@ -14,8 +14,7 @@ namespace DisabledMobility
     [Serializable]
     public class DisabledMobilitySensorProxy : DisabledMobilitySensor
     {
-        public PointF ActionTarget { get { return m_endActionTarget; } protected set { m_endActionTarget = value; } }
-        private PointF m_endActionTarget;
+        public PointF ActionTarget { get; set; }
 
         /// <summary>
         /// Constructor.  Set default values.
@@ -23,7 +22,7 @@ namespace DisabledMobility
         public DisabledMobilitySensorProxy()
             : base()
         {
-            m_endActionTarget = PointF.Empty;
+            ActionTarget = PointF.Empty;
         }
 
         /// <summary>

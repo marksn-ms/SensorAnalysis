@@ -13,14 +13,12 @@ namespace DisabledMobility
     [Serializable]
     public class DisabledMobilitySensor : Inhabitant
     {
-        private int m_expiration;
         [CategoryAttribute("Behavior"), ReadOnlyAttribute(true)]
-        public int Expiration { get { return m_expiration; } set { m_expiration = value; } }
+        public int Expiration { get; set; }
 
         private bool m_actionSet;
-        private World.Actions m_action;
         [CategoryAttribute("Initialization"), ReadOnlyAttribute(true)]
-        public World.Actions DefaultAction { get { return m_action; } set { m_action = value; } }
+        public World.Actions DefaultAction { get; set; }
 
         /// <summary>
         /// Constructor.  Set default values.
@@ -45,10 +43,10 @@ namespace DisabledMobility
                 DefaultAction = (World.Actions)Parent.World.Random.Next((int)World.Actions.Max); // returns 0-15 (not actStay)
             }
 
-            if (m_expiration > 0)
+            if (Expiration > 0)
             {
                 Action = DefaultAction;
-                m_expiration--;
+                Expiration--;
             }
             else
                 Action = World.Actions.actStay;

@@ -12,42 +12,13 @@ namespace WorldSim.Interface
     [Serializable]
     public class HexagonTile : Tile
     {
-        private HexagonTile m_north;
-        public HexagonTile North
-        {
-            get { return m_north; }
-            set { m_north = value; }
-        }
-        private HexagonTile m_south;
-        public HexagonTile South
-        {
-            get { return m_south; }
-            set { m_south = value; }
-        }
-        private HexagonTile m_northeast;
-        public HexagonTile Northeast
-        {
-            get { return m_northeast; }
-            set { m_northeast = value; }
-        }
-        private HexagonTile m_northwest;
-        public HexagonTile Northwest
-        {
-            get { return m_northwest; }
-            set { m_northwest = value; }
-        }
-        private HexagonTile m_southeast;
-        public HexagonTile Southeast
-        {
-            get { return m_southeast; }
-            set { m_southeast = value; }
-        }
-        private HexagonTile m_southwest;
-        public HexagonTile Southwest
-        {
-            get { return m_southwest; }
-            set { m_southwest = value; }
-        }
+        public HexagonTile North { get; set; }
+        public HexagonTile South { get; set; }
+        public HexagonTile Northeast { get; set; }
+        public HexagonTile Northwest { get; set; }
+        public HexagonTile Southeast { get; set; }
+        public HexagonTile Southwest { get; set; }
+
         public override PointF Position
         {
             get
@@ -60,6 +31,7 @@ namespace WorldSim.Interface
                 m_bRegionDirty = true;
             }
         }
+
         /// <summary>Returns true if the specified point lies within the bounding rectangle of this object.</summary>
         /// <param name="pt">The point to test (in world coordinates)</param>
         /// <returns>True = the point lies within the bounding rectangle.</returns>
@@ -84,15 +56,12 @@ namespace WorldSim.Interface
         {
             get
             {
-                List<Tile> neighbors = new List<Tile>();
-                neighbors.Add(North);
-                neighbors.Add(Northeast);
-                neighbors.Add(Southeast);
-                neighbors.Add(South);
-                neighbors.Add(Southwest);
-                neighbors.Add(Northwest);
-                foreach (Tile t in neighbors)
-                    yield return t;
+                yield return North;
+                yield return Northeast;
+                yield return Southeast;
+                yield return South;
+                yield return Southwest;
+                yield return Northwest;
             }
         }
         public override IEnumerable<Tile> AllTiles
@@ -120,14 +89,11 @@ namespace WorldSim.Interface
                     HexagonTile nextEast = rowStart;
                     do
                     {
-                        //Trace.Write(string.Format("({0},{1})-", nextEast.Position.X, nextEast.Position.Y));
                         yield return nextEast;
                         nextEast = nextEast.Southeast;
                     } while (nextEast.Position.X > rowStart.Position.X);
-                    //Trace.WriteLine("X");
                     rowStart = rowStart.South;
                 } while (rowStart.Position.Y > this.Position.Y);
-                //Trace.WriteLine("X");
  */
             }
         }
@@ -235,16 +201,15 @@ namespace WorldSim.Interface
         }
 
         private bool m_bRegionDirty;
+
         public HexagonTile(PointF ptOrigin, SizeF size)
             : base()
         {
             Position = ptOrigin;
             Size = size;
-            m_north = m_south = m_northeast = m_northwest = m_southeast = m_southwest = this;
+            North = South = Northeast = Northwest = Southeast = Southwest = this;
             m_bRegionDirty = true;
             ForeColor = Color.FromArgb(255, 255, 200);
-            //m_outline = GetGraphicsPath();
-            //m_region = new Region(m_outline);
         }
 
         private GraphicsPath GetGraphicsPath()
@@ -269,9 +234,6 @@ namespace WorldSim.Interface
                 new Point((int)Position.X + x0, (int)Position.Y + y1)
             };
             g.AddPolygon(p);
-            //Matrix m = new Matrix();
-            //m.Translate(Position.X, Position.Y);
-            //g.Transform(m);
             return g;
         }
 

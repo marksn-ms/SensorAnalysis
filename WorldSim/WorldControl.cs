@@ -162,12 +162,7 @@ namespace WorldSim
 
         public class ObjectSelectedEventArgs : EventArgs
         {
-            private SelectableObject m_selected;
-            public SelectableObject Selected
-            {
-                get { return m_selected; }
-                set { m_selected = value; }
-            }
+            public SelectableObject Selected { get; set; }
             public ObjectSelectedEventArgs(SelectableObject obj)
             {
                 Selected = obj;
@@ -257,9 +252,8 @@ namespace WorldSim
 
         public class LogEventArgs : EventArgs
         {
-            private string m_strMessage;
-            public string Message { get { return m_strMessage; } set { m_strMessage = value; } }
-            public LogEventArgs(string m) { m_strMessage = m; }
+            public string Message { get; set; }
+            public LogEventArgs(string m) { Message = m; }
         }
         public delegate void LogDelegate(object sender, LogEventArgs e);
         public event LogDelegate LogEvent;

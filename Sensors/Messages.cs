@@ -33,22 +33,18 @@ namespace Sensors
 
     public class RegisterMobileAgentMessage : Message
     {
-        private SelectableObject m_recipient;
-        public SelectableObject Recipient
-        {
-            get { return m_recipient; }
-        }
+        public SelectableObject Recipient { get; private set; }
 
         public RegisterMobileAgentMessage(SelectableObject sender, SelectableObject recip)
             : base(sender)
         {
-            m_recipient = recip;
+            Recipient = recip;
         }
 
         public RegisterMobileAgentMessage(Message m, SelectableObject sender, SelectableObject recip)
             : base(m, sender)
         {
-            m_recipient = recip;
+            Recipient = recip;
         }
 
         public override string ToString()
@@ -59,17 +55,8 @@ namespace Sensors
 
     public class UpdateMobileAgentRecordRoutedMessage : RoutedMessage
     {
-        private SelectableObject m_mobileAgent;
-        public SelectableObject MobileAgent
-        {
-            get { return m_mobileAgent; }
-        }
-
-        private SelectableObject m_newTower;
-        public SelectableObject newTower
-        {
-            get { return m_newTower; }
-        }
+        public SelectableObject MobileAgent { get; private set; }
+        public SelectableObject NewTower { get; private set; }
 
         /// <summary>
         /// default constructor
@@ -81,8 +68,8 @@ namespace Sensors
         public UpdateMobileAgentRecordRoutedMessage(SelectableObject sender, SelectableObject recip, SelectableObject thisMobileAgent, SelectableObject thisNewStation)
             : base(sender, recip)
         {
-            m_mobileAgent = thisMobileAgent;
-            m_newTower = thisNewStation;
+            MobileAgent = thisMobileAgent;
+            NewTower = thisNewStation;
         }
         /// <summary>
         /// override constructor
@@ -95,8 +82,8 @@ namespace Sensors
         public UpdateMobileAgentRecordRoutedMessage(Message m, SelectableObject sender, SelectableObject recip, SelectableObject thisMobileAgent, SelectableObject thisNewStation)
             : base(m, sender, recip)
         {
-            m_mobileAgent = thisMobileAgent;
-            m_newTower = thisNewStation;
+            MobileAgent = thisMobileAgent;
+            NewTower = thisNewStation;
         }
     }
 
@@ -104,21 +91,18 @@ namespace Sensors
     /// </summary>
     public class releaseMobileAgentRecordRoutedMessage : RoutedMessage
     {
-        private SelectableObject m_mobileAgent;
-        public SelectableObject mobileAgent
-        {
-            get { return m_mobileAgent; }
-        }
+        public SelectableObject mobileAgent { get; private set; }
+
         public releaseMobileAgentRecordRoutedMessage(SelectableObject sender, SelectableObject recip, SelectableObject mobileAgent)
             : base(sender, recip)
         {
-            m_mobileAgent = mobileAgent;
+            this.mobileAgent = mobileAgent;
         }
 
         public releaseMobileAgentRecordRoutedMessage(Message m, SelectableObject sender, SelectableObject recip, SelectableObject mobileAgent)
             : base(m, sender, recip)
         {
-            m_mobileAgent = mobileAgent;
+            this.mobileAgent = mobileAgent;
         }
     }
 }

@@ -42,62 +42,35 @@ namespace WorldSim.Interface
     public class Inhabitant : SelectableObject
     {
         private static int m_nNextID = 0;
-        private int m_nID;
-        public int ID
-        {
-            get { return m_nID; }
-        }
-        private int m_nTicks; // number of times that Tick as been called for this Inhabitant
-        public int Ticks
-        {
-            get { return m_nTicks; }
-            set { m_nTicks = value; }
-        }
-        protected double m_fRewardTotal;
-        public double RewardTotal
-        {
-            get { return m_fRewardTotal; }
-            set { m_fRewardTotal = value; }
-        }
-        protected double m_fReward;
-        public virtual double Reward
-        {
-            get { return m_fReward; }
-            set { m_fReward = value; }
-        }
+        public int ID { get; private set; }
+        public int Ticks { get; set; }
+        public double RewardTotal { get; set; }
+        public virtual double Reward { get; set; }
 
         /// <summary>
         /// How far the inhabitant can sense other agents/goals.
         /// </summary>
-        private double m_dSensorRange;
         [CategoryAttribute("Initialization")]
-        public double SensorRange
-        {
-            get { return m_dSensorRange; }
-            set { m_dSensorRange = value; }
-        }
+        public double SensorRange { get; set; }
 
         public Inhabitant()
             : base()
         {
-            m_nTicks = 0;
-            m_nID = m_nNextID++;
+            ID = m_nNextID++;
             Position = new PointF(0,0);
             Size = new Size(5, 5);
             ForeColor = Color.Black;
             BackgroundColor = Color.Red;
             SelectedColor = Color.Green;
             Selected = false;
-            m_fRewardTotal = 0;
-            m_fReward = 0;
             Symbol = 'a';
-            m_dSensorRange = 50; // default to the same as the tile size
+            SensorRange = 100; // default to the same as the tile size
         }
 
         public override void Tick()
         {
             // increment the tick counter
-            m_nTicks++;
+            Ticks++;
 
 #if PerceptionHistory
             History.Insert(0,new PerceptionActionReward(this.Action, Reward, World.Perceptions(this)));

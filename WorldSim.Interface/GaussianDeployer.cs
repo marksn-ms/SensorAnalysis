@@ -29,16 +29,6 @@ namespace WorldSim.Interface
             }
 
             DeployAroundPoint(World.Random, 0.10d, tiles, inhabitants);
-
-            // now spread the inhabitants evenly throughout the tiles
-            //foreach (Inhabitant i in inhabitants)
-            //{
-            //    int whichTile = World.Random.Next(tiles.Count - 1);
-            //    Tile receiveInhabitant = tiles[whichTile];
-            //    i.Parent.RemoveObject(i);
-            //    i.Position = receiveInhabitant.RandomPoint(World.Random);
-            //    receiveInhabitant.AddObject(i);
-            //}
         }
 
         private void DeployAroundPoint(ECRandom r, double Sigma, List<Tile> tiles, List<Inhabitant> inhabitants)

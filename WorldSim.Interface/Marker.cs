@@ -10,12 +10,11 @@ namespace WorldSim.Interface
     [Serializable]
     public class Marker : SelectableObject
     {
-        private Guid m_markerID;
-        public Guid ID { get { return m_markerID; } }
+        public Guid ID { get; private set; }
         
         public Marker()
         {
-            m_markerID = Guid.NewGuid();
+            ID = Guid.NewGuid();
             Expires = 100;
         }
 

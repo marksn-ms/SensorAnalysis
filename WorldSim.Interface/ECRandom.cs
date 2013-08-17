@@ -9,44 +9,18 @@ namespace WorldSim.Interface
     /// Some useful random number generators based on class Random.
     /// </summary>
     [Serializable]
-    public class ECRandom
+    public class ECRandom : Random
     {
-        Random m_rand;
-        bool m_bHaveNextGaussian;
-        double m_fNextGaussian;
+        private bool m_bHaveNextGaussian;
+        private double m_fNextGaussian;
 
         /// <summary>
         /// Constructor for the ECRandom object.
         /// </summary>
         /// <param name="nSeed">Seed to use for the random number series.</param>
         public ECRandom(int nSeed)
+            : base(nSeed)
         {
-            m_rand = new Random(nSeed);
-        }
-
-        /// <summary>
-        /// Retrieve the next pseudorandom number in the series.
-        /// </summary>
-        /// <param name="nMaxValue">Maximum value returned.</param>
-        /// <returns>A value between 0 and nMaxValue.</returns>
-        public int Next(int nMaxValue)
-        {
-            return m_rand.Next(nMaxValue);
-        }
-
-        public int Next(int nMinValue, int nMaxValue)
-        {
-            return m_rand.Next(nMinValue, nMaxValue);
-        }
-
-        /// <summary>
-        /// Retrieve the next pseudorandom number in the series, in the form of
-        /// a double between 0.0 and 1.0.
-        /// </summary>
-        /// <returns>A value between 0.0 and 1.0.</returns>
-        public double NextDouble()
-        {
-            return m_rand.NextDouble();
         }
 
         /// <summary>

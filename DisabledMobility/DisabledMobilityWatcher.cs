@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace DisabledMobility
         public DisabledMobilityWatcher(World world)
             : base(world)
         {
+            Log = new StringWriter();
             if (world != null)
             {
                 world.PostTickEvent += new World.PostTickDelegate(OnPostTickEvent);
@@ -24,10 +26,16 @@ namespace DisabledMobility
             }
         }
 
+        /// <summary>
+        /// Called once a test run is over, at which time we'll take the opportunity to write
+        /// the contents of our log to file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnPostStepEvent(object sender, World.PostStepEventArgs e)
         {
-            m_sw.Close();
-            m_sw = null;
+            WriteLog();
+            Log.Flush();
         }
 
         /// <summary>
@@ -41,8 +49,6 @@ namespace DisabledMobility
         private int m_timesPolled = 0;
         void OnPostTickEvent(object sender, World.PostTickEventArgs e)
         {
-            if (m_sw == null)
-                CreateLog();
             if (m_tilesPolled == null)
             {
                 m_tilesPolled = new Dictionary<Tile, int>();
@@ -50,7 +56,7 @@ namespace DisabledMobility
                     m_tilesPolled.Add(t, -1);
             }
 
-            const int LogTicks = 10;  // TODO: pass in LogTicks parameter
+            const int LogTicks = 10;
             if (e.Tick % LogTicks == 0)
             {
                 int nSensors = 0;
@@ -110,7 +116,7 @@ namespace DisabledMobility
                 }
                 m_lastTickLogged = e.Tick;
 
-                m_sw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
+                Log.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
                     World.Guid.ToString(), 
                     e.Repeat, e.Tick, nDisabled, nSensors,
                     nTilesCovered, nTilesUncovered,
@@ -125,6 +131,8 @@ namespace DisabledMobility
                         m_tilesPolled[t] = e.Tick;
                 }
             }
+
+            // TODO: periodically, if it is time to write, do that now
         }
 
         /// <summary>
@@ -136,25 +144,45 @@ namespace DisabledMobility
             World.PostStepEvent -= this.OnPostStepEvent;
         }
 
-        private StreamWriter m_sw;
+        private StringWriter Log { get; set; }
 
         /// <summary>
         /// Autosaves the save log.
         /// </summary>
-        private void CreateLog()
+        private void WriteLog()
         {
-            string strFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-            strFolder += "\\" + "DisabledMobility";
-            if (!Directory.Exists(strFolder))
-                Directory.CreateDirectory(strFolder);
-            string strFileName = strFolder + "\\simdata.csv";
-            if (!File.Exists(strFileName))
+            int writeLogTriesLeft = 6000;
+            while ((writeLogTriesLeft--) > 0)
             {
-                m_sw = File.CreateText(strFileName);
-                m_sw.WriteLine("sim,trial,tick,num_disabled,num_sensors,num_covered,num_uncovered,num_newly_covered,num_notnewly_covered,num_polled,num_notpolled,times_polled");
+                try
+                {
+                    string strFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+                    strFolder += "\\" + "DisabledMobility";
+                    if (!Directory.Exists(strFolder))
+                        Directory.CreateDirectory(strFolder);
+                    string strFileName = strFolder + "\\simdata.csv";
+
+                    StreamWriter sw;
+                    if (File.Exists(strFileName))
+                        sw = File.AppendText(strFileName);
+                    else
+                    {
+                        sw = File.CreateText(strFileName);
+                        sw.WriteLine("sim,trial,tick,num_disabled,num_sensors,num_covered,num_uncovered,num_newly_covered,num_notnewly_covered,num_polled,num_notpolled,times_polled");
+                    }
+                    sw.Write(Log.ToString());
+                    sw.Close();
+                    Log.Flush();
+
+                    // now that we wrote the log, we can leave
+                    writeLogTriesLeft = 0;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("DisabledMobilityWatcher.WriteLog: unable to write to log...retrying.");
+                    System.Threading.Thread.Sleep(100);
+                }
             }
-            else
-                m_sw = File.AppendText(strFileName);
         }
     }    
 }

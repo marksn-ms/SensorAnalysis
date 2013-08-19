@@ -21,7 +21,6 @@ namespace WorldSim
 
         private void frmStartRunning_Load(object sender, EventArgs e)
         {
-            txtLogTicks.Text = m_testSettings.LogFrequency.ToString();
             txtTicks.Text = m_testSettings.Duration.ToString();
             txtRepeats.Text = m_testSettings.Repeats.ToString();
         }
@@ -30,7 +29,6 @@ namespace WorldSim
         {
             try
             {
-                m_testSettings.LogFrequency = Int32.Parse(txtLogTicks.Text);
                 m_testSettings.Duration = Int32.Parse(txtTicks.Text);
                 m_testSettings.Repeats = Int32.Parse(txtRepeats.Text);
             }

@@ -26,7 +26,6 @@ namespace WorldSim
         private int m_nRepeat; // counts how many test runs have elapsed in current simulation
         private bool m_bGoOnStart; // start test run on startup, after form initialized
         private bool m_bExitOnFinish; // exit program following test run completion
-        private string m_strLogFolder;       // folder in which to store log files
         private string m_strConfigFilename;
 
         private Dictionary<string, Type> m_agentTypes;
@@ -76,11 +75,6 @@ namespace WorldSim
                             FileStream ReadFileStream = new FileStream(m_strConfigFilename, FileMode.Open, FileAccess.Read, FileShare.Read);
                             m_testSettings = (TestSettings)SerializerObj.Deserialize(ReadFileStream);
                             ReadFileStream.Close(); 
-                            break;
-                        case "/logfolder": 
-                            m_strLogFolder = args[++i];
-                            if (!Directory.Exists(m_strLogFolder))
-                                throw new ApplicationException("Invalid log folder: '" + m_strLogFolder + "'.");    
                             break;
                         case "/go": m_bGoOnStart = true; break;
                         case "/exit": m_bExitOnFinish = true; break;
@@ -357,9 +351,9 @@ namespace WorldSim
             string strFilenameBase = "simdata-";
             int nFileNumber = 1;
 
-            string strFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-            if (m_strLogFolder.Length > 0)
-                strFolder = m_strLogFolder;
+            string strFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\SensorAnalysis";
+            if (!Directory.Exists(strFolder))
+                Directory.CreateDirectory(strFolder);
             while (File.Exists(strFolder + "\\" + strFilenameBase + nFileNumber.ToString("0#") + ".csv"))
                 nFileNumber++;
 
@@ -688,8 +682,8 @@ namespace WorldSim
                     Tick();
 
                     // log every so many ticks
-                    if (m_nTicks % m_testSettings.LogFrequency == 0)
-                        backgroundWorker1.ReportProgress((int)(100 * m_nTicks / m_testSettings.Duration));
+                    //if (m_nTicks % m_testSettings.LogFrequency == 0)
+                    backgroundWorker1.ReportProgress((int)(100 * m_nTicks / m_testSettings.Duration));
 
                     // give the app a chance to catch up
                     Application.DoEvents();
@@ -697,8 +691,8 @@ namespace WorldSim
                 m_world.World.DoPostStepEvent();
             }
 
-            if (m_bExitOnFinish)
-                AutoSaveLog();
+            //if (m_bExitOnFinish)
+            //    AutoSaveLog();
 
             DoLogEvent(this, "Test run completed.");
             m_world.World.DoPostTestRunEvent();
@@ -717,7 +711,7 @@ namespace WorldSim
             progressBar1.Visible = false;
             if (m_bExitOnFinish)
             {
-                AutoSaveLog();
+                //AutoSaveLog();
                 this.Close();
             }
             else

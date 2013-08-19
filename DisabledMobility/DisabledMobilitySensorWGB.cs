@@ -46,6 +46,7 @@ namespace DisabledMobility
         public DisabledMobilitySensorWGB()
             : base()
         {
+            Expiration = -1;
         }
 
         /// <summary>
@@ -65,6 +66,8 @@ namespace DisabledMobility
                 ActionTarget = Parent;
 
             if (Expiration == 0)
+                return;
+            if ((Ticks + ID) % 5 == 0) // add a bit of randomness to their behavior
                 return;
 
             if (/*(Ticks + ID) % 10 == 0 ||*/ World.Distance(PointF.Empty, Tile.VectorTo(Position, ActionTarget.Center, World.Width, World.Height, false)) < 5.0)
@@ -151,7 +154,10 @@ namespace DisabledMobility
             }
 
             // if we got here, we have a target to move towards, so compute the vector to it
-            Velocity = Tile.VectorTo(Position, ActionTarget.Center, Parent.World.Width, Parent.World.Height);
+            if (World.Distance(Position, ActionTarget.Center) < 5.0)
+                Velocity = PointF.Empty;
+            else
+                Velocity = Tile.VectorTo(Position, ActionTarget.Center, Parent.World.Width, Parent.World.Height);
             Action = World.Actions.actUseVelocity;
         }
 

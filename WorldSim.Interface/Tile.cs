@@ -49,6 +49,10 @@ namespace WorldSim.Interface
         {
             return VectorTo(this.Center, t, World.Width, World.Height);
         }
+        public PointF VectorTo(PointF a, PointF b, bool Normalize = true)
+        {
+            return VectorTo(a, b, World.Width, World.Height, Normalize);
+        }
         public static PointF VectorTo(PointF o, PointF t, int Width, int Height, bool Normalize = true)
         {
             PointF v = new PointF(t.X - o.X, t.Y - o.Y);

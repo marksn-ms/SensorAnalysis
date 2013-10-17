@@ -18,6 +18,8 @@ namespace WorldSim
     [Serializable]
     public class TestSettings
     {
+        public String Title { get; set; }
+
         // environment settings
         public Size Tiles { get; set; }                  // number of tiles
         public Size TileSize { get; set; }               // size of individual tiles

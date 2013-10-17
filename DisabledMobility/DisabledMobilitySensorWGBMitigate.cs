@@ -11,63 +11,19 @@ using System.Diagnostics;
 
 namespace DisabledMobility
 {
-    public class TileColoring
-    {
-        public enum Coloring { White, Gray, Black }
-        public Coloring Value
-        {
-            get 
-            {
-                if (Black.Count() > 0)
-                    return Coloring.Black;
-                else if (Gray.Count() > 0)
-                    return Coloring.Gray;
-                else
-                    return Coloring.White;
-            }
-        }
-        public List<DisabledMobilitySensorRandomWalk> Gray { get; set; }
-        public List<DisabledMobilitySensorRandomWalk> Black { get; set; }
-        public TileColoring()
-        {
-            Gray = new List<DisabledMobilitySensorRandomWalk>();
-            Black = new List<DisabledMobilitySensorRandomWalk>();
-        }
-    }
-
     [Serializable]
-    public class DisabledMobilitySensorWGB : DisabledMobilitySensorRandomWalk
+    public class DisabledMobilitySensorWGBMitigate : DisabledMobilitySensorRandomWalk
     {
-        private List<Tile> m_previousTargets;
-        public Tile ActionTarget 
-        { 
-            get 
-            {
-                if (m_previousTargets == null || m_previousTargets.Count() == 0)
-                    return null;
-                return m_previousTargets.Last();
-            } 
-            set
-            {
-                if (m_previousTargets == null)
-                    m_previousTargets = new List<Tile>();
-                if (m_previousTargets.Count() == 0 || m_previousTargets.Last() != value)
-                    m_previousTargets.Add(value);
-                while (m_previousTargets.Count() > 20)
-                    m_previousTargets.RemoveAt(0);
-            } 
-        }
+        public Tile ActionTarget { get; set; }
 
         /// <summary>
         /// Constructor.  Set default values.
         /// </summary>
-        public DisabledMobilitySensorWGB()
+        public DisabledMobilitySensorWGBMitigate()
             : base()
         {
             Expiration = -1;
         }
-
-        const bool bMitigate = false;
 
         /// <summary>
         /// As time (ticks) progress, the odds that the mobility of this
@@ -83,8 +39,11 @@ namespace DisabledMobility
             if (ActionTarget == null)
                 ActionTarget = Parent;
 
-            // indicate where we intend to go next
-            ActionTarget = GetActionTarget(Parent, ActionTarget, Position, World);
+            // this is mitigation for disabled mobility
+            if (Expiration == 0)
+                ActionTarget = Parent;  // stop misleading everyone about where we intend to go--staying put!
+            else
+                ActionTarget = GetActionTarget(Parent, ActionTarget, Position, World);
 
             // if we got here, we have a target to move towards, so compute the vector to it
             if ((Expiration == 0) || World.Distance(Position, ActionTarget.Center) < 5.0)
@@ -107,7 +66,7 @@ namespace DisabledMobility
             if (distanceToTarget < 5.0)
             {
                 if (this.ID == idToTrace)
-                    Debug.WriteLine("37 - arrived; position({0},{1}), target({2},{3}), distance({4}).", 
+                    Debug.WriteLine("37 - arrived; position({0},{1}), target({2},{3}), distance({4}).",
                         Position.X, Position.Y, currentActionTarget.Center.X, currentActionTarget.Center.Y, distanceToTarget);
 
                 Dictionary<Tile, TileColoring> tileTargets = new Dictionary<Tile, TileColoring>();
@@ -118,24 +77,24 @@ namespace DisabledMobility
                     tileTargets.Add(t, new TileColoring());
                 }
 
-                List<DisabledMobilitySensorWGB> agents = new List<DisabledMobilitySensorWGB>();
+                List<DisabledMobilitySensorWGBMitigate> agents = new List<DisabledMobilitySensorWGBMitigate>();
                 foreach (Tile t in tileTargets.Keys)
                 {
-                    foreach (DisabledMobilitySensorWGB s in t.Objects(typeof(DisabledMobilitySensorWGB)))
+                    foreach (DisabledMobilitySensorWGBMitigate s in t.Objects(typeof(DisabledMobilitySensorWGBMitigate)))
                         agents.Add(s);
                     foreach (Tile tt in t.Neighbors)
                     {
                         if (!tileTargets.ContainsKey(tt) && !otherTiles.Contains(tt))
                         {
                             otherTiles.Add(tt);
-                            foreach (DisabledMobilitySensorWGB s in tt.Objects(typeof(DisabledMobilitySensorWGB)))
+                            foreach (DisabledMobilitySensorWGBMitigate s in tt.Objects(typeof(DisabledMobilitySensorWGBMitigate)))
                                 agents.Add(s);
                         }
                     }
                 }
 
                 // count how many occupants of nearby tiles have that tile as a target
-                foreach (DisabledMobilitySensorWGB s in agents)
+                foreach (DisabledMobilitySensorWGBMitigate s in agents)
                 {
                     Tile target = (s.ActionTarget == null) ? s.Parent : s.ActionTarget;
                     if (tileTargets.ContainsKey(target))

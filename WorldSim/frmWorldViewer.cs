@@ -19,7 +19,7 @@ namespace WorldSim
     /// </summary>
     public partial class frmWorldViewer : Form
     {
-        private TestSettings m_testSettings;
+        private TestSettings testSettings { get; set; }
         //private Random m_random;
 
         private int m_nTicks; // counts how many ticks have elapsed in current simulation
@@ -42,7 +42,7 @@ namespace WorldSim
             InitializeComponent();
             m_nTicks = 0;
             m_nRepeat = 0;
-            m_testSettings = new TestSettings();
+            testSettings = new TestSettings();
 
             m_agentTypes = ConfigurationManager.GetSection("Agents") as Dictionary<string, Type>;
             if (m_agentTypes == null)
@@ -73,7 +73,7 @@ namespace WorldSim
                                 throw new ApplicationException("Invalid config filename: '" + m_strConfigFilename + "'.");
                             XmlSerializer SerializerObj = new XmlSerializer(typeof(TestSettings));
                             FileStream ReadFileStream = new FileStream(m_strConfigFilename, FileMode.Open, FileAccess.Read, FileShare.Read);
-                            m_testSettings = (TestSettings)SerializerObj.Deserialize(ReadFileStream);
+                            testSettings = (TestSettings)SerializerObj.Deserialize(ReadFileStream);
                             ReadFileStream.Close(); 
                             break;
                         case "/go": m_bGoOnStart = true; break;
@@ -89,8 +89,8 @@ namespace WorldSim
                 this.Close();
             }
 
-            m_world.TilesHeight = m_testSettings.Tiles.Height;
-            m_world.TilesWidth = m_testSettings.Tiles.Width;
+            m_world.TilesHeight = testSettings.Tiles.Height;
+            m_world.TilesWidth = testSettings.Tiles.Width;
         }
 
         /// <summary>
@@ -142,9 +142,9 @@ namespace WorldSim
                 //}
             }
 
-            m_testSettings.Tiles = dlg.Tiles;
-            m_testSettings.TileSize = dlg.TileSize;
-            m_testSettings.TileShape = dlg.TileShape;
+            testSettings.Tiles = dlg.Tiles;
+            testSettings.TileSize = dlg.TileSize;
+            testSettings.TileShape = dlg.TileShape;
             DoLogEvent(this, "Created world with " + m_world.TilesWidth + "x" 
                 + m_world.TilesHeight + " " + dlg.TileShape + " tiles, sized " + m_world.TileWidth + "x" 
                 + m_world.TileHeight + ".");
@@ -192,7 +192,7 @@ namespace WorldSim
         private void mnuEditGo_Click(object sender, EventArgs e)
         {
             frmStartRunning dlg = new frmStartRunning();
-            dlg.m_testSettings = m_testSettings;
+            dlg.testSettings = testSettings;
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 mnuEditGo.Enabled = false;
@@ -203,10 +203,10 @@ namespace WorldSim
                 progressBar1.Value = 0;
                 progressBar1.Visible = true;
 
-                // m_testSettings will already have been updated if they clicked ok in this case
+                // testSettings will already have been updated if they clicked ok in this case
                 DoLogEvent(this, "Starting simulation.");
 
-                //SetupTestRun(m_testSettings, m_world);
+                //SetupTestRun(testSettings, m_world);
 
                 m_nTicks = 0;
                 backgroundWorker1.RunWorkerAsync();
@@ -309,14 +309,14 @@ namespace WorldSim
         /// <param name="sw">The stream to which the headers will be written.</param>
         private void WriteLogHeaders(StreamWriter sw)
         {
-            foreach (string str in m_testSettings.Instructions) sw.WriteLine(str);
-            //sw.WriteLine(string.Format("Agents: {0}"), String.Join(",", m_testSettings.Agent));
-            //sw.Write("Population: "); string strSep = ""; foreach (int i in m_testSettings.Population) { sw.Write(strSep + i.ToString()); strSep = ","; }
-            //sw.Write("Range: "); strSep = ""; foreach (int i in m_testSettings.SensorRange) { sw.Write(strSep + i.ToString()); strSep = ","; }
-            //sw.WriteLine(string.Format("AgentDeployment: "), m_testSettings.PointDeployment ? "Point" : "Normal");
-            sw.WriteLine(string.Format("Environment: {0}({1},{2},{3},{4})"), m_world.World.Tiles.GetType().Name, m_testSettings.Tiles.Width, m_testSettings.Tiles.Height, m_testSettings.TileSize.Width, m_testSettings.TileSize.Height);
-            sw.WriteLine(string.Format("Events: {0}({1})"), m_testSettings.IncidentMaxTurnsBeforeMove == 0 ? "Constant" : "Dynamic", m_testSettings.Incident);
-            sw.WriteLine(string.Format("EventDeployment: {0}"), m_testSettings.NonUniformIncidentDistribution ? "NonUniform" : "UniformRandom");
+            foreach (string str in testSettings.Instructions) sw.WriteLine(str);
+            //sw.WriteLine(string.Format("Agents: {0}"), String.Join(",", testSettings.Agent));
+            //sw.Write("Population: "); string strSep = ""; foreach (int i in testSettings.Population) { sw.Write(strSep + i.ToString()); strSep = ","; }
+            //sw.Write("Range: "); strSep = ""; foreach (int i in testSettings.SensorRange) { sw.Write(strSep + i.ToString()); strSep = ","; }
+            //sw.WriteLine(string.Format("AgentDeployment: "), testSettings.PointDeployment ? "Point" : "Normal");
+            sw.WriteLine(string.Format("Environment: {0}({1},{2},{3},{4})"), m_world.World.Tiles.GetType().Name, testSettings.Tiles.Width, testSettings.Tiles.Height, testSettings.TileSize.Width, testSettings.TileSize.Height);
+            sw.WriteLine(string.Format("Events: {0}({1})"), testSettings.IncidentMaxTurnsBeforeMove == 0 ? "Constant" : "Dynamic", testSettings.Incident);
+            sw.WriteLine(string.Format("EventDeployment: {0}"), testSettings.NonUniformIncidentDistribution ? "NonUniform" : "UniformRandom");
             sw.WriteLine("");
             sw.WriteLine("Time," + String.Join(",", lstLeaders.Items[0].ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)));
         }
@@ -605,7 +605,8 @@ namespace WorldSim
                 progressBar1.Value = 0;
                 progressBar1.Visible = true;
 
-                SetupTestRun(m_testSettings, m_world);
+                m_world.World.Title = testSettings.Title;
+                SetupTestRun(testSettings, m_world);
                 m_nTicks = 0;
                 backgroundWorker1.RunWorkerAsync();
             }
@@ -620,7 +621,7 @@ namespace WorldSim
                 DoLogEvent(this, "Added " + mnuWatcher.Text + " watcher.");
                 Watcher w = (Watcher)Activator.CreateInstance(m_watcherTypes[mnuWatcher.Text], m_world.World);
                 string str = JsonHelper.WorldTypeToJson("Watcher", w, 1);
-                m_testSettings.Instructions.Add(str);
+                testSettings.Instructions.Add(str);
             }
         }
 
@@ -653,7 +654,7 @@ namespace WorldSim
             DoLogEvent(sender, "Starting test run.");
             m_world.World.DoPreTestRunEvent();
 
-            for (m_nRepeat = 0; m_nRepeat < Math.Max(m_testSettings.Repeats,1) && !backgroundWorker1.CancellationPending; m_nRepeat++)
+            for (m_nRepeat = 0; m_nRepeat < Math.Max(testSettings.Repeats,1) && !backgroundWorker1.CancellationPending; m_nRepeat++)
             {
                 m_nTicks = 0;
                 m_world.World.DoPreStepEvent();
@@ -662,28 +663,28 @@ namespace WorldSim
                     //System.Diagnostics.Debug.WriteLine("Resetting world.");
                     DoLogEvent(this, "Resetting world.");
 
-                    this.m_world.Reset(m_testSettings.Tiles, m_testSettings.TileSize, m_testSettings.TileShape);
+                    this.m_world.Reset(testSettings.Tiles, testSettings.TileSize, testSettings.TileShape);
                     foreach (Watcher w in m_watcherActive)
                         w.Dispose();
                     m_watcherActive.Clear();
                     DoLogEvent(this, "Created world with " + m_world.TilesWidth + "x"
-                        + m_world.TilesHeight + " " + m_testSettings.TileShape + " tiles, sized " + m_world.TileWidth + "x"
+                        + m_world.TilesHeight + " " + testSettings.TileShape + " tiles, sized " + m_world.TileWidth + "x"
                         + m_world.TileHeight + ".");
 
-                    // re-setup the environment the same as m_testSettings indicates 
+                    // re-setup the environment the same as testSettings indicates 
                     // -- any custom settings from initial setup will be lost 
                     // -- in other words, repeats are only really supported via cmdline
-                    SetupTestRun(m_testSettings, m_world);
+                    SetupTestRun(testSettings, m_world);
                 }
 
-                for (m_nTicks = 0; m_nTicks < m_testSettings.Duration && !backgroundWorker1.CancellationPending; m_nTicks++ )
+                for (m_nTicks = 0; m_nTicks < testSettings.Duration && !backgroundWorker1.CancellationPending; m_nTicks++ )
                 {
                     // process a single tick
                     Tick();
 
                     // log every so many ticks
-                    //if (m_nTicks % m_testSettings.LogFrequency == 0)
-                    backgroundWorker1.ReportProgress((int)(100 * m_nTicks / m_testSettings.Duration));
+                    //if (m_nTicks % testSettings.LogFrequency == 0)
+                    backgroundWorker1.ReportProgress((int)(100 * m_nTicks / testSettings.Duration));
 
                     // give the app a chance to catch up
                     Application.DoEvents();
@@ -825,7 +826,7 @@ namespace WorldSim
                 return;
 
             // add the specified objects as listed in dlg
-            m_testSettings.Instructions.Add(dlg.m_strAgentType);
+            testSettings.Instructions.Add(dlg.m_strAgentType);
             for (int i = 0; i < dlg.m_nPopulation; i++)
             {
                 SelectableObject o = (SelectableObject)Activator.CreateInstance(dlg.m_agentType, null);
@@ -884,7 +885,7 @@ namespace WorldSim
             o.Deploy();
             DoLogEvent(this, "Deployed using " + dlg.m_deployType + " deployer.");
             string str = JsonHelper.WorldTypeToJson("Deployer", o, 1);
-            m_testSettings.Instructions.Add(str);
+            testSettings.Instructions.Add(str);
             m_world.Invalidate();
         }
 

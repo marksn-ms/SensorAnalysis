@@ -175,7 +175,7 @@ namespace WorldSim.Interface
             return false;
         }
         [CategoryAttribute("Behavior")]
-        public IEnumerable<SelectableObject> Objects(Type T)
+        public IEnumerable<SelectableObject> Objects(Type T) 
         {
             List<SelectableObject> list = new List<SelectableObject>();
             foreach (SelectableObject s in m_objects)

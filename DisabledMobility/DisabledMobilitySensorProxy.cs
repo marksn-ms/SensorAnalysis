@@ -12,7 +12,7 @@ using System.Diagnostics;
 namespace DisabledMobility
 {
     [Serializable]
-    public class DisabledMobilitySensorProxy : DisabledMobilitySensor
+    public class DisabledMobilitySensorProxy : DisabledMobilitySensorRandomWalk
     {
         public PointF ActionTarget { get; set; }
 

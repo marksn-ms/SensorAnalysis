@@ -12,8 +12,15 @@ using System.Diagnostics;
 namespace DisabledMobility
 {
     [Serializable]
-    public class DisabledMobilitySensorVF : DisabledMobilitySensor
+    public class DisabledMobilitySensorVF : DisabledMobilitySensorRandomWalk
     {
+        internal class DoubleComparer : IComparer<double>
+        {
+            const double eps = 1E-10;
+            public int Compare(double x, double y)
+            { return y > x + eps ? -1 : y < x - eps ? 1 : 0; }
+        } 
+
         public PointF ActionTarget { get; set; }
 
         /// <summary>
@@ -57,29 +64,31 @@ namespace DisabledMobility
                     tileTargets.Add(t);
                 }
 
-                List<DisabledMobilitySensorVF> agents = new List<DisabledMobilitySensorVF>();
+                SortedList<double,DisabledMobilitySensorVF> agents = new SortedList<double,DisabledMobilitySensorVF>(new DoubleComparer());
                 foreach (Tile t in tileTargets)
                 {
                     foreach (DisabledMobilitySensorVF s in t.Objects(typeof(DisabledMobilitySensorVF)))
-                        agents.Add(s);
+                    {
+                        agents.Add(World.Distance(s.Position, this.Position), s);
+                    }
                     foreach (Tile tt in t.Neighbors)
                     {
                         if (!tileTargets.Contains(tt) && !otherTiles.Contains(tt))
                         {
                             otherTiles.Add(tt);
                             foreach (DisabledMobilitySensorVF s in tt.Objects(typeof(DisabledMobilitySensorVF)))
-                                agents.Add(s);
+                                agents.Add(World.Distance(s.Position, this.Position), s);
                         }
                     }
-                    //while (agents.Keys.Count > 3) // only keep closest 3
-                    //    agents.Remove(agents.Keys.Last());
+                    while (agents.Keys.Count > 6) // only keep closest 6
+                        agents.Remove(agents.Keys.Last());
                 }
 
                 // for each nearby sensor, we want to sum up the attractive/repulsive force
                 // the force is the vector from sensor to this agent, minus length of ideal distance (distance * sqrt(3) / 2)
                 // the sum of all these vectors is the ideal spot we'd like to head towards
                 PointF newTarget = new PointF();
-                foreach (var p in agents)
+                foreach (var p in agents.Values)
                 {
                     PointF v = Parent.VectorTo(p.Position, this.Position, false);
                     PointF f = GetForce(v);

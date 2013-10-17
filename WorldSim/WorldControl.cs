@@ -89,7 +89,7 @@ namespace WorldSim
         {
             InitializeComponent();
             m_random = new ECRandom((int)DateTime.Now.Ticks);
-            m_world = new World(new Size(10, 10), new Size(100, 100), "Rectangle", m_random);
+            m_world = new World(new Size(10, 10), new Size(100, 100), "New World", m_random);
             m_world.CollisionDetectedEvent += OnCollisionDetected;
             m_world.ObjectSelectedEvent += OnObjectSelected;
             m_world.LogEvent += OnLogEvent;
@@ -117,7 +117,7 @@ namespace WorldSim
             m_world.CollisionDetectedEvent -= OnCollisionDetected;
             m_world.ObjectSelectedEvent -= OnObjectSelected;
             m_world.LogEvent -= OnLogEvent;
-            m_world = new World(tiles, tileSize, strTileShape, m_random);
+            m_world = new World(tiles, tileSize, strTileShape, m_world.Title, m_random);
             m_world.LogEvent += OnLogEvent;
             m_world.CollisionDetectedEvent += OnCollisionDetected;
             m_world.ObjectSelectedEvent += OnObjectSelected;

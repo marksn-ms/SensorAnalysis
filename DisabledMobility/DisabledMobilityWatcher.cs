@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,20 @@ using WorldSim.Interface;
 
 namespace DisabledMobility
 {
+    public class WatcherCoverage
+    {
+        public PointF Point { get; set; }
+        public int Polled { get; set; }
+        public WatcherCoverage(PointF p)
+        {
+            Point = p;
+            Polled = 0;
+        }
+    }
+
     public class DisabledMobilityWatcher : Watcher
     {
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="MobileSensorWatcher"/> class.
         /// </summary>
@@ -44,27 +57,43 @@ namespace DisabledMobility
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="WorldSim.Interface.World.MessageSentEventArgs"/> instance containing the event data.</param>
         private Dictionary<Tile, int> m_tilesPolled;
-        private int m_lastTickPolled = -1;
+        private Dictionary<Tile, List<WatcherCoverage>> m_pointsPolled;
         private int m_lastTickLogged = -1;
+        private int m_lastTickPolled = -1;
         private int m_timesPolled = 0;
+        private int m_lastTickPointsPolled = -1;
+        private int m_timesPointsPolled = 0;
         void OnPostTickEvent(object sender, World.PostTickEventArgs e)
         {
+            double range = Math.Sqrt(2) * World.Tiles.Size.Width / 2;
+
             if (m_tilesPolled == null)
             {
                 m_tilesPolled = new Dictionary<Tile, int>();
+                m_pointsPolled = new Dictionary<Tile, List<WatcherCoverage>>();
                 foreach (Tile t in World.Tiles.AllTiles)
+                {
                     m_tilesPolled.Add(t, -1);
+                    m_pointsPolled.Add(t, new List<WatcherCoverage>());
+                    for (int i = 0; i < t.Size.Width; i++)
+                    {
+                        for (int j = 0; j < t.Size.Height; j++)
+                        {
+                            m_pointsPolled[t].Add(new WatcherCoverage(new PointF(t.Position.X + i, t.Position.Y + j)));
+                        }
+                    }
+                }
             }
 
-            const int LogTicks = 10;
+            const int LogTicks = 20;
             if (e.Tick % LogTicks == 0)
             {
                 int nSensors = 0;
                 int nDisabled = 0;
-                foreach (DisabledMobilitySensor d in World.Objects(typeof(DisabledMobilitySensor)))
+                foreach (DisabledMobilitySensorRandomWalk d in World.Objects(typeof(DisabledMobilitySensorRandomWalk)))
                 {
                     nSensors++;
-                    if (d.Expiration < e.Tick)
+                    if (d.Expiration == 0)
                         nDisabled++;
                 }
 
@@ -73,12 +102,16 @@ namespace DisabledMobility
                 int nTilesCovered = 0;
                 int nTilesUncovered = 0;
                 int nTilesNewlyCovered = 0;
-                int nTilesNotNewlyCovered = 0;
                 int nPolled = 0;
                 int nNotPolled = 0;
+                int nPointsCovered = 0;
+                int nPointsNewlyCovered = 0;
+                int nPoints = 0;
+                int nPointsPolled = 0;
+                int nPointsNotPolled = 0;
                 foreach (Tile t in World.Tiles.AllTiles)
                 {
-                    if (t.HasObjects(typeof(DisabledMobilitySensor)))
+                    if (t.HasObjects(typeof(DisabledMobilitySensorRandomWalk)))
                     {
                         // this tile is covered
                         nTilesCovered++;
@@ -86,48 +119,102 @@ namespace DisabledMobility
                         // if it was covered last tick, then it isn't newly covered
                         if (m_tilesPolled[t] > m_lastTickLogged)
                             nTilesNewlyCovered++;
-                        else
-                            nTilesNotNewlyCovered++;
                         m_tilesPolled[t] = e.Tick;
                     }
                     else
                     {
                         // this tile is uncovered
                         nTilesUncovered++;
-                        nTilesNotNewlyCovered++;
+                    }
+                    // if all the tiles' last tick visited value is higher than m_lastTickPolled
+                    // then it means we have polled again
+                    if (m_tilesPolled[t] > m_lastTickPolled)
+                        nPolled++;
+                    else
+                        nNotPolled++;
+
+                    var o = t.Objects(typeof(DisabledMobilitySensorRandomWalk));
+                    foreach (WatcherCoverage w in m_pointsPolled[t])
+                    {
+                        nPoints++;
+                        foreach (SelectableObject s in o)
+                        {
+                            if (World.Distance(w.Point, s.Position) < range)
+                            {
+                                if (w.Polled > m_lastTickLogged)
+                                    nPointsNewlyCovered++;
+                                nPointsCovered++;
+                                w.Polled = e.Tick;
+                                break;
+                            }
+                        }
+                        if (w.Polled > m_lastTickPointsPolled)
+                            nPointsPolled++;
+                        else
+                            nPointsNotPolled++;
                     }
                 }
 
+#if false
+                // compute a more true coverage (slower)
+                int nPointCovered = 0;
+                int nPointUncovered = 0;
+                foreach (Tile t in World.Tiles.AllTiles)
+                {
+                    IEnumerable<SelectableObject> inhabitants = t.NearbyObjects(typeof(DisabledMobilitySensorRandomWalk));
+                    for (int i = 0; i < t.Size.Width; i+=4)
+                    {
+                        for (int j = 0; j < t.Size.Height; j+=4)
+                        {
+                            PointF p = new PointF(t.Position.X+i, t.Position.Y+j);
+                            bool bCovered = false;
+                            foreach (SelectableObject s in inhabitants)
+                            {
+                                if (World.Distance(s.Position, p) < range)
+                                {
+                                    bCovered = true;
+                                    break;
+                                }
+                            }
+                            if (bCovered)
+                                nPointCovered++;
+                            else
+                                nPointUncovered++;
+                        }
+                    }
+                }
+#endif
+
                 // num_ticks_since_last_poll, num_tiles_polled, num_tiles_unpolled
                 // we have to check each tile to see if it has been polled since last time all polled
-                foreach (int i in m_tilesPolled.Values)
-                {
-                    // if all the tiles' last tick visited value is higher than m_lastTickPolled
-                    // then it means we have polled again
-                    if (i <= m_lastTickPolled)
-                        nNotPolled++;
-                    else
-                        nPolled++;
-                }
                 if (e.Tick > 0 && nNotPolled == 0) // we polled again
                 {
                     m_lastTickPolled = e.Tick - 1;
                     m_timesPolled++;
                 }
+                if (e.Tick > 0 && nPointsNotPolled == 0) // we polled again
+                {
+                    m_lastTickPointsPolled = e.Tick - 1;
+                    m_timesPointsPolled++;
+                }
                 m_lastTickLogged = e.Tick;
 
-                Log.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
+                Log.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}",
+                    World.Title,
                     World.Guid.ToString(), 
                     e.Repeat, e.Tick, nDisabled, nSensors,
                     nTilesCovered, nTilesUncovered,
-                    nTilesNewlyCovered, nTilesNotNewlyCovered,
-                    nPolled, nNotPolled, m_timesPolled);
+                    nTilesNewlyCovered,
+                    nPolled, nNotPolled, m_timesPolled,
+                    nPointsCovered, nPoints-nPointsCovered,
+                    nPointsNewlyCovered, 
+                    nPointsPolled, nPointsNotPolled, m_timesPointsPolled);
             }
             else
             {
                 foreach (Tile t in World.Tiles.AllTiles)
                 {
-                    if (t.HasObjects(typeof(DisabledMobilitySensor)))
+                    if (t.HasObjects(typeof(DisabledMobilitySensorRandomWalk)))
                         m_tilesPolled[t] = e.Tick;
                 }
             }
@@ -168,7 +255,7 @@ namespace DisabledMobility
                     else
                     {
                         sw = File.CreateText(strFileName);
-                        sw.WriteLine("sim,trial,tick,num_disabled,num_sensors,num_covered,num_uncovered,num_newly_covered,num_notnewly_covered,num_polled,num_notpolled,times_polled");
+                        sw.WriteLine("parms,sim,trial,tick,num_disabled,num_sensors,num_covered,num_uncovered,num_newly_covered,num_polled,num_notpolled,times_polled,points_covered,points_uncovered,points_newlycovered,points_polled,points_notpolled,times_points_polled");
                     }
                     sw.Write(Log.ToString());
                     sw.Close();

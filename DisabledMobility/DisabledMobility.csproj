@@ -44,12 +44,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisabledMobilitySensorWGBMitigate.cs" />
     <Compile Include="DisabledMobilitySensorVF.cs" />
     <Compile Include="DisabledMobilitySensorWGB.cs" />
     <Compile Include="DisabledMobilitySensorProxy.cs" />
-    <Compile Include="DisabledMobilitySensor2.cs" />
+    <Compile Include="DisabledMobilitySensorRandomDirectionWalk.cs" />
     <Compile Include="DisabledMobilityDeployer.cs" />
-    <Compile Include="DisabledMobilitySensor.cs" />
+    <Compile Include="DisabledMobilitySensorRandomWalk.cs" />
     <Compile Include="DisabledMobilityWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

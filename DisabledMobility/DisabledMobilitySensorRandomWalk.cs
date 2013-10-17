@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 namespace DisabledMobility
 {
     [Serializable]
-    public class DisabledMobilitySensor : Inhabitant
+    public class DisabledMobilitySensorRandomWalk : Inhabitant
     {
         [CategoryAttribute("Behavior"), ReadOnlyAttribute(true)]
         public int Expiration { get; set; }
@@ -23,7 +23,7 @@ namespace DisabledMobility
         /// <summary>
         /// Constructor.  Set default values.
         /// </summary>
-        public DisabledMobilitySensor()
+        public DisabledMobilitySensorRandomWalk()
         {
             m_actionSet = false;
         }

@@ -26,20 +26,20 @@ namespace DisabledMobility
         public override void Deploy()
         {
             List<Tile> tiles = new List<Tile>();
-            List<DisabledMobilitySensor> inhabitants = new List<DisabledMobilitySensor>();
+            List<DisabledMobilitySensorRandomWalk> inhabitants = new List<DisabledMobilitySensorRandomWalk>();
             foreach (Tile t in World.Tiles.AllTiles)
             {
                 tiles.Add(t);
-                foreach (Inhabitant i in t.Objects(typeof(DisabledMobilitySensor)))
-                    inhabitants.Add((DisabledMobilitySensor)i);
+                foreach (Inhabitant i in t.Objects(typeof(DisabledMobilitySensorRandomWalk)))
+                    inhabitants.Add((DisabledMobilitySensorRandomWalk)i);
             }
             // now set the expiration on all of the (disabled-type) inhabitants
             double Sigma = 0.10d;
             double dMin = double.PositiveInfinity;
             double dMax = double.NegativeInfinity;
-            foreach (DisabledMobilitySensor i in inhabitants)
+            foreach (DisabledMobilitySensorRandomWalk i in inhabitants)
             {
-                double d = (World.Random.NextGaussian() * Sigma + 0.5) * 1000;
+                double d = (World.Random.NextGaussian() * Sigma + 0.5) * 500;
 
                 dMin = Math.Min(dMin, d);
                 dMax = Math.Max(dMax, d);

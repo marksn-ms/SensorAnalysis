@@ -12,14 +12,14 @@ using System.Diagnostics;
 namespace DisabledMobility
 {
     [Serializable]
-    public class DisabledMobilitySensor2 : DisabledMobilitySensor
+    public class DisabledMobilitySensorRandomDirectionWalk : DisabledMobilitySensorRandomWalk
     {
         private PointF m_endActionTarget;
 
         /// <summary>
         /// Constructor.  Set default values.
         /// </summary>
-        public DisabledMobilitySensor2()
+        public DisabledMobilitySensorRandomDirectionWalk()
             : base()
         {
         }
@@ -40,10 +40,10 @@ namespace DisabledMobility
                     // locate a vacant cell nearby and head for that location
                     int Max = -1;
                     foreach (Tile t in Parent.Neighbors)
-                        Max = Math.Max(t.Objects(typeof(DisabledMobilitySensor)).Count(), Max);
+                        Max = Math.Max(t.Objects(typeof(DisabledMobilitySensorRandomWalk)).Count(), Max);
                     RouletteWheel<Tile> r = new RouletteWheel<Tile>(Parent.World.Random);
                     foreach (Tile t in Parent.Neighbors)
-                        r.Add(0.1 + Max - t.Objects(typeof(DisabledMobilitySensor)).Count(), t);
+                        r.Add(0.1 + Max - t.Objects(typeof(DisabledMobilitySensorRandomWalk)).Count(), t);
 
                     Tile target = r.Choice;
 

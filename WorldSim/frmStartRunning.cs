@@ -12,25 +12,25 @@ namespace WorldSim
 {
     public partial class frmStartRunning : Form
     {
-        internal TestSettings m_testSettings;
+        internal TestSettings testSettings;
         public frmStartRunning()
         {
             InitializeComponent();
-            m_testSettings = new TestSettings();
+            testSettings = new TestSettings();
         }
 
         private void frmStartRunning_Load(object sender, EventArgs e)
         {
-            txtTicks.Text = m_testSettings.Duration.ToString();
-            txtRepeats.Text = m_testSettings.Repeats.ToString();
+            txtTicks.Text = testSettings.Duration.ToString();
+            txtRepeats.Text = testSettings.Repeats.ToString();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
             try
             {
-                m_testSettings.Duration = Int32.Parse(txtTicks.Text);
-                m_testSettings.Repeats = Int32.Parse(txtRepeats.Text);
+                testSettings.Duration = Int32.Parse(txtTicks.Text);
+                testSettings.Repeats = Int32.Parse(txtRepeats.Text);
             }
             catch
             {
@@ -57,7 +57,7 @@ namespace WorldSim
             {
                 XmlSerializer SerializerObj = new XmlSerializer(typeof(TestSettings));
                 TextWriter WriteFileStream = new StreamWriter(sfd.FileName);
-                SerializerObj.Serialize(WriteFileStream, m_testSettings);
+                SerializerObj.Serialize(WriteFileStream, testSettings);
                 WriteFileStream.Close();
             }
         }

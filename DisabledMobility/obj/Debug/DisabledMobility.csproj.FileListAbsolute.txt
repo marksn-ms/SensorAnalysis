@@ -1,0 +1,9 @@
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\bin\Debug\DisabledMobility.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\bin\Debug\DisabledMobility.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\bin\Debug\WorldSim.Interface.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\bin\Debug\WorldSim.Interface.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\obj\Debug\DisabledMobility.csprojAssemblyReference.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\obj\Debug\DisabledMobility.csproj.CoreCompileInputs.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\obj\Debug\DisabledMobility.csproj.CopyComplete
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\obj\Debug\DisabledMobility.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\DisabledMobility\obj\Debug\DisabledMobility.pdb

@@ -1,0 +1,9 @@
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\bin\Debug\TourAgent.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\bin\Debug\TourAgent.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\bin\Debug\WorldSim.Interface.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\bin\Debug\WorldSim.Interface.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\obj\Debug\TourAgent.csprojAssemblyReference.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\obj\Debug\TourAgent.csproj.CoreCompileInputs.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\obj\Debug\TourAgent.csproj.CopyComplete
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\obj\Debug\TourAgent.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TourAgent\obj\Debug\TourAgent.pdb

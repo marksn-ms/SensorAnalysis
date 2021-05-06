@@ -1044,6 +1044,18 @@ namespace WorldSim.Interface
             return Distance(s1.Center, s2.Center);
         }
 
+        public void Select(SelectableObject o)
+        {
+            if (m_selected != null)
+            {
+                m_selected.Parent.Selected = false;
+                m_selected.Selected = false;
+            }
+            o.Parent.Selected = true;
+            o.Selected = true;
+            m_selected = o;
+        }
+
         /// <summary>
         /// If they click on an Inhabitant, select (or deselect) it, else, 
         /// select (or deselect) the tile in which they clicked.

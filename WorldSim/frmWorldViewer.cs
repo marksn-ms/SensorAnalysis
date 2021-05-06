@@ -834,6 +834,7 @@ namespace WorldSim
                 o.World = m_world.World;
                 o.Position = m_world.World.Tiles.Center;
                 m_world.World.Tiles.AddObject(o);
+                comboBox1.Items.Add(o);
 #if false
                 if (dlg.m_deployMethod == frmAddObjects.DeploymentMethod.Point)
                 {
@@ -933,5 +934,10 @@ namespace WorldSim
             m_world.Invalidate();
         }
 
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            m_world.World.Select(comboBox1.SelectedItem as SelectableObject);
+            propertyGrid1.SelectedObject = comboBox1.SelectedItem as SelectableObject;
+        }
     }
 }

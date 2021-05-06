@@ -138,5 +138,10 @@ namespace WorldSim.Interface
         /// </summary>
         /// <returns>End-user description of the deployer.</returns>
         public override string Info() { return "Generic inhabitant capable of drawing itself and just sitting there during the simulation, doing just about nothing."; }
+
+        public override string ToString()
+        {
+            return String.Format("{0} {1}", this.GetType().Name, ID.ToString());
+        }
     }
 }

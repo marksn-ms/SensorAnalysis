@@ -1,0 +1,9 @@
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\bin\Debug\MobileSensorAgents.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\bin\Debug\MobileSensorAgents.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\bin\Debug\WorldSim.Interface.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\bin\Debug\WorldSim.Interface.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\obj\Debug\MobileSensorAgents.csprojAssemblyReference.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\obj\Debug\MobileSensorAgents.csproj.CoreCompileInputs.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\obj\Debug\MobileSensorAgents.csproj.CopyComplete
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\obj\Debug\MobileSensorAgents.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\MobileSensorAgents\obj\Debug\MobileSensorAgents.pdb

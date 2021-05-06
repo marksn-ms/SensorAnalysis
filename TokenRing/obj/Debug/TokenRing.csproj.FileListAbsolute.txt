@@ -1,0 +1,9 @@
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\bin\Debug\TokenRing.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\bin\Debug\TokenRing.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\bin\Debug\WorldSim.Interface.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\bin\Debug\WorldSim.Interface.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\obj\Debug\TokenRing.csprojAssemblyReference.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\obj\Debug\TokenRing.csproj.CoreCompileInputs.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\obj\Debug\TokenRing.csproj.CopyComplete
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\obj\Debug\TokenRing.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\TokenRing\obj\Debug\TokenRing.pdb

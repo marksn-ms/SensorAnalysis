@@ -1,0 +1,9 @@
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\bin\Debug\Sensors.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\bin\Debug\Sensors.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\bin\Debug\WorldSim.Interface.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\bin\Debug\WorldSim.Interface.pdb
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\obj\Debug\Sensors.csprojAssemblyReference.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\obj\Debug\Sensors.csproj.CoreCompileInputs.cache
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\obj\Debug\Sensors.csproj.CopyComplete
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\obj\Debug\Sensors.dll
+C:\Users\marksn.redmond\Source\Repos\SensorAnalysis\Sensors\obj\Debug\Sensors.pdb
